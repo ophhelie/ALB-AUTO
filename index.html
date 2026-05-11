@@ -7,94 +7,56 @@
   <meta name="description" content="ALB Auto 73, spécialiste achat et vente de véhicules en Savoie. Transparent, local, réactif." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
     /* ============================================================
-       RESET & VARIABLES
+       RESET & TOKENS
     ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --black:   #0a0a0a;
-      --dark:    #111111;
-      --dark-2:  #1a1a1a;
-      --dark-3:  #222222;
-      --dark-4:  #2a2a2a;
-      --orange:  #e8650a;
+      --bg:        #000000;
+      --bg-1:      #0d0d0d;
+      --bg-2:      #141414;
+      --bg-3:      #1c1c1c;
+      --border:    rgba(255,255,255,.08);
+      --border-hi: rgba(255,255,255,.14);
+      --orange:    #e8650a;
       --orange-lt: #ff7a20;
       --orange-dk: #c4530a;
-      --white:   #ffffff;
-      --grey:    #888888;
-      --grey-lt: #aaaaaa;
-      --border:  rgba(255,255,255,.08);
-      --radius:  8px;
-      --transition: .25s ease;
+      --orange-gl: rgba(232,101,10,.15);
+      --white:     #ffffff;
+      --muted:     rgba(255,255,255,.5);
+      --muted-2:   rgba(255,255,255,.28);
+      --font:      'Inter', system-ui, sans-serif;
+      --ease:      cubic-bezier(.22,1,.36,1);
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; font-size: 16px; }
 
     body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--black);
+      font-family: var(--font);
+      background: var(--bg);
       color: var(--white);
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     img { max-width: 100%; display: block; }
-    a { color: inherit; text-decoration: none; }
-    ul { list-style: none; }
+    a   { color: inherit; text-decoration: none; }
+    ul  { list-style: none; }
 
     /* ============================================================
-       UTILITY
+       FADE-IN SCROLL
     ============================================================ */
-    .container {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    .tag {
-      display: inline-block;
-      font-size: .7rem;
-      font-weight: 700;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--orange);
-      border: 1px solid rgba(232,101,10,.4);
-      border-radius: 4px;
-      padding: 3px 10px;
-    }
-
-    .section-title {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 800;
-      line-height: 1.1;
-      text-transform: uppercase;
-      letter-spacing: -.02em;
-    }
-
-    .section-title em {
-      font-style: normal;
-      color: var(--orange);
-    }
-
-    /* Fade-in */
-    .fade-in {
+    .reveal {
       opacity: 0;
-      transform: translateY(24px);
-      transition: opacity .6s ease, transform .6s ease;
+      transform: translateY(32px);
+      transition: opacity .7s var(--ease), transform .7s var(--ease);
     }
-    .fade-in.visible { opacity: 1; transform: none; }
-
-    /* Divider */
-    .divider {
-      width: 40px; height: 3px;
-      background: var(--orange);
-      border-radius: 2px;
-    }
+    .reveal.visible { opacity: 1; transform: none; }
 
     /* ============================================================
        HEADER
@@ -102,100 +64,97 @@
     #header {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 1000;
-      background: rgba(10,10,10,.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      z-index: 900;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
-      transition: background var(--transition);
+      transition: background .3s ease;
     }
 
     .header-inner {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 28px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      height: 68px;
+      gap: 40px;
     }
 
     /* Logo */
     .logo {
       display: flex;
       align-items: center;
+      flex-shrink: 0;
     }
-
-    .logo img {
-      height: 42px;
-      width: auto;
-    }
-
+    .logo img { height: 36px; width: auto; }
     .logo-text {
       display: flex;
       align-items: baseline;
-      gap: 4px;
+      gap: 3px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -.03em;
     }
+    .logo-text .la { color: var(--white); }
+    .logo-text .lb { color: var(--orange); }
+    .logo-text .lc { font-size: .7rem; font-weight: 600; color: var(--muted); margin-left: 1px; }
 
-    .logo-text .l-alb  { font-size: 1.4rem; font-weight: 900; color: var(--white); letter-spacing: -.02em; }
-    .logo-text .l-auto { font-size: 1.4rem; font-weight: 900; color: var(--orange); letter-spacing: -.02em; }
-    .logo-text .l-dept { font-size: .75rem; font-weight: 600; color: var(--grey); margin-left: 2px; }
-
-    /* Nav */
-    .nav-links {
+    /* Nav centré */
+    nav.main-nav {
+      flex: 1;
       display: flex;
-      align-items: center;
-      gap: 36px;
+      justify-content: center;
+      gap: 32px;
     }
 
-    .nav-links a {
-      font-size: .82rem;
+    nav.main-nav a {
+      font-size: .85rem;
       font-weight: 500;
-      color: var(--grey-lt);
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      transition: color var(--transition);
+      color: var(--muted);
+      transition: color .2s;
     }
+    nav.main-nav a:hover { color: var(--white); }
 
-    .nav-links a:hover { color: var(--orange); }
-
-    .nav-btn {
+    /* CTA nav */
+    .nav-cta {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 22px;
-      background: var(--orange);
-      color: var(--white) !important;
-      border-radius: 6px;
-      font-size: .82rem !important;
-      font-weight: 700 !important;
-      text-transform: uppercase !important;
-      letter-spacing: .06em !important;
-      transition: background var(--transition), transform var(--transition) !important;
+      gap: 7px;
+      padding: 9px 20px;
+      background: var(--white);
+      color: var(--bg);
+      border-radius: 50px;
+      font-size: .83rem;
+      font-weight: 700;
+      letter-spacing: -.01em;
+      transition: background .2s, transform .2s;
+      flex-shrink: 0;
     }
-
-    .nav-btn:hover {
-      background: var(--orange-lt) !important;
-      color: var(--white) !important;
-      transform: translateY(-1px);
-    }
+    .nav-cta:hover { background: #e8e8e8; transform: scale(1.02); }
 
     /* Burger */
     .burger {
       display: none;
       flex-direction: column;
       gap: 5px;
-      cursor: pointer;
       padding: 6px;
       background: none;
       border: none;
+      cursor: pointer;
+      margin-left: auto;
     }
-
     .burger span {
       display: block;
       width: 22px; height: 2px;
       background: var(--white);
       border-radius: 2px;
-      transition: transform var(--transition), opacity var(--transition);
+      transition: transform .25s, opacity .25s;
     }
-
     .burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .burger.open span:nth-child(2) { opacity: 0; }
     .burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -203,75 +162,61 @@
     .mobile-nav {
       display: none;
       position: fixed;
-      top: 68px; left: 0; right: 0;
-      background: var(--dark);
-      border-bottom: 1px solid var(--border);
-      padding: 24px;
+      top: 64px; left: 0; right: 0; bottom: 0;
+      background: var(--bg);
+      z-index: 899;
       flex-direction: column;
-      gap: 4px;
-      z-index: 999;
+      padding: 32px 28px;
+      gap: 6px;
     }
-
     .mobile-nav.open { display: flex; }
-
     .mobile-nav a {
-      font-size: .9rem;
-      font-weight: 500;
-      color: var(--grey-lt);
-      padding: 12px 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--white);
+      padding: 14px 0;
       border-bottom: 1px solid var(--border);
-      text-transform: uppercase;
-      letter-spacing: .06em;
     }
-
-    .mobile-nav .nav-btn {
-      margin-top: 12px;
-      text-align: center;
-      justify-content: center;
-    }
-
+    .mobile-nav .nav-cta { margin-top: 20px; justify-content: center; }
 
     /* ============================================================
        HERO
     ============================================================ */
     #accueil {
-      padding-top: 68px;
+      position: relative;
       min-height: 100svh;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      position: relative;
+      padding-top: 64px;
       overflow: hidden;
-      background: var(--black);
+      background: var(--bg);
     }
 
-    /* Grille décorative subtile */
-    #accueil::before {
-      content: '';
+    /* Halos de fond */
+    .hero-glow-a {
       position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-      background-size: 60px 60px;
+      top: -20%; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 600px;
+      background: radial-gradient(ellipse, rgba(232,101,10,.18) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero-glow-b {
+      position: absolute;
+      bottom: -10%; right: -15%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(232,101,10,.07) 0%, transparent 70%);
       pointer-events: none;
     }
 
-    /* Halo orange */
-    .hero-glow {
-      position: absolute;
-      top: 30%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 700px; height: 700px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(232,101,10,.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-inner {
+    .hero-container {
       position: relative;
       z-index: 1;
-      padding: 60px 0 80px;
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 80px 28px 100px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -279,534 +224,503 @@
       gap: 0;
     }
 
-    .hero-location {
+    /* Pill badge */
+    .hero-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid var(--border-hi);
+      border-radius: 50px;
       font-size: .75rem;
       font-weight: 600;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--grey);
-      margin-bottom: 24px;
+      color: var(--muted);
+      letter-spacing: .04em;
+      margin-bottom: 36px;
     }
-
-    .hero-location span {
+    .hero-pill .dot {
       width: 6px; height: 6px;
       border-radius: 50%;
       background: var(--orange);
       flex-shrink: 0;
+      animation: pulse 2s ease infinite;
     }
 
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .4; }
+    }
+
+    /* Titre géant */
     .hero-title {
-      font-size: clamp(2.8rem, 8vw, 6.5rem);
+      font-size: clamp(3rem, 9vw, 8rem);
       font-weight: 900;
-      line-height: .95;
-      text-transform: uppercase;
-      letter-spacing: -.04em;
+      line-height: .92;
+      letter-spacing: -.05em;
       margin-bottom: 28px;
     }
 
-    .hero-title .line-orange { color: var(--orange); }
-    .hero-title .line-dim    { color: rgba(255,255,255,.2); }
+    .hero-title .plain { color: var(--white); }
+    .hero-title .grad  {
+      background: linear-gradient(90deg, var(--orange-lt) 0%, #ffb347 60%, var(--orange) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-title .dim   { color: rgba(255,255,255,.18); }
 
     .hero-sub {
-      font-size: 1rem;
+      font-size: clamp(.95rem, 1.8vw, 1.15rem);
       font-weight: 400;
-      color: var(--grey);
-      max-width: 480px;
+      color: var(--muted);
       line-height: 1.7;
-      margin-bottom: 52px;
+      max-width: 520px;
+      margin-bottom: 56px;
     }
 
-    /* ============================================================
-       WIDGET SPLIT — ACHETER / VENDRE
-    ============================================================ */
+    /* ---- Widget split ACHETER / VENDRE ---- */
     .hero-widget {
       width: 100%;
-      max-width: 860px;
+      max-width: 920px;
       display: flex;
-      border-radius: 14px;
+      border-radius: 20px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,.1);
-      box-shadow: 0 24px 80px rgba(0,0,0,.6);
+      border: 1px solid var(--border-hi);
+      background: rgba(255,255,255,.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.04), 0 32px 80px rgba(0,0,0,.6);
     }
 
-    /* --- Panneau gauche : ACHETER --- */
     .widget-buy {
       flex: 1 1 60%;
-      background: #161616;
-      padding: 32px 32px 28px;
+      padding: 32px 30px 28px;
       display: flex;
       flex-direction: column;
       gap: 20px;
-      border-right: 1px solid rgba(255,255,255,.07);
-      transition: flex var(--transition);
+      border-right: 1px solid var(--border);
       min-width: 0;
     }
 
-    .widget-header {
+    .widget-head {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
     }
 
     .widget-label {
-      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: -.01em;
-      line-height: 1.1;
+      font-size: clamp(.95rem, 2vw, 1.25rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.15;
     }
 
-    .widget-count {
+    .widget-stock {
       text-align: right;
       flex-shrink: 0;
     }
-
-    .widget-count strong {
+    .widget-stock strong {
       display: block;
-      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
       font-weight: 900;
-      line-height: 1;
+      letter-spacing: -.05em;
       color: var(--orange);
-      letter-spacing: -.04em;
+      line-height: 1;
     }
-
-    .widget-count span {
-      font-size: .72rem;
+    .widget-stock span {
+      font-size: .68rem;
       font-weight: 500;
-      color: var(--grey);
+      color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: .06em;
+      letter-spacing: .05em;
     }
 
-    /* Champs */
-    .widget-fields {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-
-    .wf-row {
+    .wf-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .widget-fields select,
-    .widget-fields input {
+    .wf-grid select {
       width: 100%;
-      padding: 11px 14px;
-      background: transparent;
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 6px;
+      padding: 11px 13px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--border-hi);
+      border-radius: 10px;
       color: var(--white);
-      font-family: 'Poppins', sans-serif;
+      font-family: var(--font);
       font-size: .8rem;
-      font-weight: 600;
-      letter-spacing: .04em;
-      text-transform: uppercase;
+      font-weight: 500;
       outline: none;
       appearance: none;
       -webkit-appearance: none;
       cursor: pointer;
-      transition: border-color var(--transition), background var(--transition);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      transition: border-color .2s, background .2s;
     }
+    .wf-grid select:hover  { border-color: rgba(255,255,255,.25); background: rgba(255,255,255,.08); }
+    .wf-grid select:focus  { border-color: var(--orange); }
+    .wf-grid option { background: #1c1c1c; }
 
-    .widget-fields select:hover,
-    .widget-fields input:hover {
-      border-color: rgba(255,255,255,.3);
-      background: rgba(255,255,255,.04);
-    }
-
-    .widget-fields select:focus,
-    .widget-fields input:focus { border-color: var(--orange); }
-
-    .widget-fields option { background: #1a1a1a; text-transform: none; font-weight: 400; }
-
-    .widget-fields input::placeholder { color: rgba(255,255,255,.4); }
-
-    /* Bouton rechercher */
-    .widget-cta {
+    .widget-foot {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
     }
 
-    .widget-more {
+    .link-more {
       font-size: .75rem;
       font-weight: 600;
-      color: var(--grey);
-      letter-spacing: .04em;
-      cursor: pointer;
-      border: none;
+      color: var(--muted);
       background: none;
-      font-family: 'Poppins', sans-serif;
-      transition: color var(--transition);
+      border: none;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: color .2s;
     }
+    .link-more:hover { color: var(--white); }
 
-    .widget-more:hover { color: var(--orange); }
-
-    .selector-btn {
+    .btn-search {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px 24px;
-      background: var(--orange);
-      color: var(--white);
+      gap: 8px;
+      padding: 11px 22px;
+      background: var(--white);
+      color: var(--bg);
       border: none;
-      border-radius: 6px;
-      font-family: 'Poppins', sans-serif;
+      border-radius: 50px;
+      font-family: var(--font);
       font-size: .82rem;
       font-weight: 700;
-      letter-spacing: .07em;
-      text-transform: uppercase;
       cursor: pointer;
-      transition: background var(--transition), transform var(--transition), gap var(--transition);
+      transition: background .2s, transform .2s, gap .2s;
     }
+    .btn-search:hover { background: #e8e8e8; transform: scale(1.02); gap: 12px; }
 
-    .selector-btn:hover {
-      background: var(--orange-lt);
-      transform: translateY(-1px);
-      gap: 14px;
-    }
-
-    /* --- Panneau droit : VENDRE --- */
+    /* Panneau VENDRE */
     .widget-sell {
       flex: 0 0 40%;
-      background: var(--orange);
       padding: 32px 28px 28px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
+      background: linear-gradient(145deg, rgba(232,101,10,.14) 0%, rgba(232,101,10,.06) 100%);
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition: flex .4s ease, background .3s ease;
+      transition: flex .45s var(--ease), background .3s;
       min-width: 200px;
     }
 
-    /* Motif géométrique sur le panneau VENDRE */
     .widget-sell::before {
       content: '';
       position: absolute;
-      top: -40px; right: -40px;
-      width: 180px; height: 180px;
+      top: -60px; right: -60px;
+      width: 220px; height: 220px;
       border-radius: 50%;
-      background: rgba(255,255,255,.08);
-      pointer-events: none;
-      transition: transform .4s ease;
-    }
-
-    .widget-sell:hover::before {
-      transform: scale(1.4);
-    }
-
-    .widget-sell::after {
-      content: '';
-      position: absolute;
-      bottom: -60px; left: -30px;
-      width: 140px; height: 140px;
-      border-radius: 50%;
-      background: rgba(0,0,0,.08);
+      background: rgba(255,255,255,.04);
+      transition: transform .5s var(--ease);
       pointer-events: none;
     }
+    .widget-sell:hover::before { transform: scale(1.5); }
+    .widget-sell:hover { flex: 0 0 48%; background: linear-gradient(145deg, rgba(232,101,10,.22) 0%, rgba(232,101,10,.1) 100%); }
 
-    .widget-sell:hover {
-      background: var(--orange-lt);
-      flex: 0 0 48%;
+    .sell-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border: 1px solid rgba(232,101,10,.4);
+      border-radius: 50px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--orange-lt);
+      align-self: flex-start;
     }
 
-    .widget-sell .widget-label { color: var(--white); }
-
-    .widget-sell .widget-count strong { color: var(--white); }
-    .widget-sell .widget-count span   { color: rgba(255,255,255,.7); }
-
-    /* Arguments clés — masqués par défaut, révélés au survol */
     .sell-args {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      overflow: hidden;
+      gap: 9px;
       max-height: 0;
+      overflow: hidden;
       opacity: 0;
-      transition: max-height .4s ease, opacity .35s ease .05s;
-      position: relative;
-      z-index: 1;
+      transition: max-height .45s var(--ease), opacity .35s ease .05s;
     }
-
-    .widget-sell:hover .sell-args {
-      max-height: 220px;
-      opacity: 1;
-    }
+    .widget-sell:hover .sell-args { max-height: 200px; opacity: 1; }
 
     .sell-arg {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
       font-size: .8rem;
-      font-weight: 600;
-      color: rgba(255,255,255,.9);
+      font-weight: 500;
+      color: rgba(255,255,255,.8);
     }
+    .sell-arg i { color: var(--orange-lt); font-size: .7rem; flex-shrink: 0; }
 
-    .sell-arg i {
-      font-size: .75rem;
-      color: rgba(255,255,255,.7);
-      flex-shrink: 0;
-    }
-
-    /* CTA vendre */
     .sell-cta {
-      position: relative;
-      z-index: 1;
+      margin-top: auto;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px 20px;
-      background: rgba(255,255,255,.15);
-      border: 1px solid rgba(255,255,255,.3);
-      border-radius: 6px;
-      color: var(--white);
-      font-family: 'Poppins', sans-serif;
-      font-size: .8rem;
+      gap: 8px;
+      padding: 11px 20px;
+      background: var(--orange);
+      border: none;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: .82rem;
       font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
+      color: var(--white);
       cursor: pointer;
-      transition: background var(--transition), gap var(--transition);
       align-self: flex-start;
-      margin-top: auto;
+      transition: background .2s, gap .2s, transform .2s;
     }
+    .sell-cta:hover { background: var(--orange-lt); gap: 12px; transform: scale(1.02); }
 
-    .sell-cta:hover {
-      background: rgba(255,255,255,.25);
-      gap: 14px;
-    }
-
-    /* Mobile : empilé */
-    @media (max-width: 600px) {
-      .hero-widget { flex-direction: column; }
-      .widget-sell { flex: none; min-width: 0; }
-      .widget-sell:hover { flex: none; }
-      .sell-args { max-height: 220px; opacity: 1; }
-      .wf-row { grid-template-columns: 1fr; }
-    }
-
-    /* Badges de confiance */
+    /* Badges confiance sous le widget */
     .hero-trust {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 28px;
-      margin-top: 40px;
+      gap: 24px;
+      margin-top: 32px;
     }
-
     .trust-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: .78rem;
+      gap: 7px;
+      font-size: .75rem;
       font-weight: 500;
-      color: var(--grey);
-      letter-spacing: .04em;
-      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .trust-item i { color: var(--orange); font-size: .72rem; }
+
+    /* ============================================================
+       SECTION COMMUNE
+    ============================================================ */
+    .section-wrap {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 28px;
     }
 
-    .trust-item i { color: var(--orange); }
+    .section-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 20px;
+    }
+    .section-eyebrow::before {
+      content: '';
+      width: 20px; height: 1px;
+      background: var(--orange);
+    }
 
+    .section-h {
+      font-size: clamp(2rem, 4.5vw, 3.8rem);
+      font-weight: 900;
+      letter-spacing: -.04em;
+      line-height: .95;
+    }
+    .section-h em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--orange-lt), var(--orange));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-lead {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 480px;
+      margin-top: 16px;
+    }
 
     /* ============================================================
        SERVICES
     ============================================================ */
     #services {
-      padding: 100px 0;
-      background: var(--dark);
+      padding: 120px 0;
+      background: var(--bg-1);
       border-top: 1px solid var(--border);
     }
 
-    .services-header {
+    .services-top {
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      margin-bottom: 60px;
+      align-items: flex-start;
+      margin-bottom: 64px;
     }
 
     .services-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 2px;
+      gap: 1px;
       background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 20px;
       overflow: hidden;
+      border: 1px solid var(--border);
     }
 
-    .service-card {
-      background: var(--dark-2);
-      padding: 40px 36px;
+    .svc-card {
+      background: var(--bg-1);
+      padding: 44px 40px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      transition: background var(--transition);
+      gap: 14px;
       position: relative;
       overflow: hidden;
+      transition: background .3s;
     }
 
-    .service-card::before {
+    .svc-card::after {
       content: '';
       position: absolute;
-      top: 0; left: 0;
-      width: 3px; height: 0;
-      background: var(--orange);
-      transition: height .4s ease;
+      inset: 0;
+      background: radial-gradient(circle at 0% 0%, rgba(232,101,10,.07) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity .4s;
+      pointer-events: none;
     }
+    .svc-card:hover { background: var(--bg-2); }
+    .svc-card:hover::after { opacity: 1; }
 
-    .service-card:hover { background: var(--dark-3); }
-    .service-card:hover::before { height: 100%; }
-
-    .service-num {
-      font-size: .7rem;
+    .svc-num {
+      font-size: .68rem;
       font-weight: 700;
       letter-spacing: .12em;
+      text-transform: uppercase;
       color: var(--orange);
-      text-transform: uppercase;
     }
 
-    .service-card h3 {
-      font-size: 1.35rem;
+    .svc-card h3 {
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
       font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: -.01em;
+      letter-spacing: -.03em;
     }
 
-    .service-card p {
-      font-size: .88rem;
-      color: var(--grey);
+    .svc-card p {
+      font-size: .9rem;
+      color: var(--muted);
       line-height: 1.7;
+      max-width: 480px;
     }
 
-    .service-card ul {
+    .svc-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-top: 4px;
+      gap: 8px;
+      margin-top: 6px;
     }
-
-    .service-card ul li {
+    .svc-list li {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: .83rem;
-      color: rgba(255,255,255,.65);
+      font-size: .84rem;
+      color: rgba(255,255,255,.6);
     }
-
-    .service-card ul li i {
+    .svc-list li i {
       color: var(--orange);
-      font-size: .75rem;
+      font-size: .72rem;
       flex-shrink: 0;
     }
 
-    .service-arrow {
+    .svc-link {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       font-size: .8rem;
       font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
       color: var(--orange);
-      margin-top: 8px;
-      transition: gap var(--transition);
+      margin-top: 10px;
+      transition: gap .2s;
     }
-
-    .service-card:hover .service-arrow { gap: 14px; }
-
+    .svc-card:hover .svc-link { gap: 14px; }
 
     /* ============================================================
-       POURQUOI
+       POURQUOI — BENTO GRID
     ============================================================ */
     #pourquoi {
-      padding: 100px 0;
-      background: var(--black);
+      padding: 120px 0;
+      background: var(--bg);
       border-top: 1px solid var(--border);
     }
 
-    .pourquoi-layout {
+    .pourquoi-head { margin-bottom: 64px; }
+
+    .bento {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 60px;
+      gap: 12px;
     }
 
-    .pourquoi-left {
+    .bento-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 32px;
       display: flex;
       flex-direction: column;
-      gap: 24px;
-    }
-
-    .pourquoi-left p {
-      font-size: .93rem;
-      color: var(--grey);
-      line-height: 1.75;
-      max-width: 440px;
-    }
-
-    .arguments-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      gap: 12px;
+      position: relative;
       overflow: hidden;
+      transition: border-color .3s, background .3s;
+    }
+    .bento-card:hover {
+      border-color: var(--border-hi);
+      background: var(--bg-3);
     }
 
-    .argument-card {
-      background: var(--dark-2);
-      padding: 28px 28px;
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-      transition: background var(--transition);
+    /* Accent halo par carte */
+    .bento-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,101,10,.12) 0%, transparent 70%);
+      pointer-events: none;
     }
 
-    .argument-card:hover { background: var(--dark-3); }
-
-    .arg-num {
-      font-size: 2.5rem;
+    .bento-num {
+      font-size: 3.5rem;
       font-weight: 900;
+      letter-spacing: -.06em;
       line-height: 1;
       color: rgba(232,101,10,.2);
-      flex-shrink: 0;
-      width: 52px;
-      text-align: right;
     }
 
-    .arg-content h3 {
-      font-size: .95rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      margin-bottom: 8px;
+    .bento-card h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
     }
 
-    .arg-content p {
-      font-size: .85rem;
-      color: var(--grey);
+    .bento-card p {
+      font-size: .87rem;
+      color: var(--muted);
       line-height: 1.65;
     }
-
 
     /* ============================================================
        CHIFFRES
     ============================================================ */
     #chiffres {
-      padding: 80px 0;
-      background: var(--orange);
+      padding: 100px 0;
+      background: var(--bg-1);
+      border-top: 1px solid var(--border);
       position: relative;
       overflow: hidden;
     }
@@ -814,185 +728,202 @@
     #chiffres::before {
       content: '';
       position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,0,0,.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,0,0,.06) 1px, transparent 1px);
-      background-size: 40px 40px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px; height: 400px;
+      background: radial-gradient(ellipse, rgba(232,101,10,.1) 0%, transparent 70%);
+      pointer-events: none;
     }
 
-    .chiffres-grid {
+    .chiffres-inner {
       position: relative;
       z-index: 1;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 48px 32px;
+      text-align: center;
     }
 
-    .chiffre-item { text-align: center; }
+    .ch-item {}
 
-    .chiffre-number {
-      font-size: clamp(2.8rem, 7vw, 4.5rem);
+    .ch-num {
+      font-size: clamp(3rem, 8vw, 6rem);
       font-weight: 900;
+      letter-spacing: -.06em;
       line-height: 1;
-      color: var(--white);
-      letter-spacing: -.04em;
+      background: linear-gradient(90deg, var(--orange-lt), var(--orange));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
+    .ch-num .unit { font-size: .55em; }
 
-    .chiffre-unit {
-      font-size: 1.8rem;
-      font-weight: 900;
-    }
-
-    .chiffre-label {
-      font-size: .78rem;
+    .ch-label {
+      font-size: .75rem;
       font-weight: 600;
-      letter-spacing: .08em;
+      letter-spacing: .06em;
       text-transform: uppercase;
-      color: rgba(255,255,255,.7);
+      color: var(--muted);
       margin-top: 8px;
     }
-
 
     /* ============================================================
        CONTACT
     ============================================================ */
     #contact {
-      padding: 100px 0;
-      background: var(--dark);
+      padding: 120px 0;
+      background: var(--bg);
       border-top: 1px solid var(--border);
     }
 
-    .contact-layout {
+    .contact-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 60px;
+      gap: 64px;
     }
 
-    .contact-left {
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-    }
+    .contact-left { display: flex; flex-direction: column; gap: 36px; }
 
-    .contact-left p {
-      font-size: .93rem;
-      color: var(--grey);
-      line-height: 1.75;
-      max-width: 400px;
-    }
-
-    .contact-info-list {
+    .contact-info {
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
 
-    .ci-row {
+    .ci {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 14px;
-      font-size: .87rem;
     }
 
-    .ci-row i {
-      width: 36px; height: 36px;
-      background: var(--dark-3);
-      border: 1px solid var(--border);
-      border-radius: 6px;
+    .ci-ico {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--bg-3);
+      border: 1px solid var(--border-hi);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--orange);
-      font-size: .85rem;
       flex-shrink: 0;
     }
+    .ci-ico i { color: var(--orange); font-size: .9rem; }
 
-    .ci-row strong { color: var(--white); font-weight: 600; }
-    .ci-row span   { color: var(--grey); font-size: .82rem; display: block; }
+    .ci-text strong {
+      display: block;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .ci-text span {
+      font-size: .8rem;
+      color: var(--muted);
+    }
 
-    /* Formulaire */
+    /* Formulaire style Revolut */
     .contact-form {
-      background: var(--dark-2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 40px 32px;
+      background: var(--bg-2);
+      border: 1px solid var(--border-hi);
+      border-radius: 24px;
+      padding: 40px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-form::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,101,10,.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .form-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      margin-bottom: 28px;
     }
 
     .form-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 16px;
+      gap: 14px;
     }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
+    .form-group { display: flex; flex-direction: column; gap: 7px; }
 
     .form-group label {
-      font-size: .75rem;
+      font-size: .72rem;
       font-weight: 700;
-      letter-spacing: .08em;
+      letter-spacing: .07em;
       text-transform: uppercase;
-      color: var(--grey-lt);
+      color: var(--muted);
     }
 
     .form-group input,
     .form-group select,
     .form-group textarea {
       width: 100%;
-      padding: 12px 16px;
-      background: var(--dark-3);
-      border: 1px solid var(--border);
-      border-radius: 6px;
+      padding: 13px 16px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--border-hi);
+      border-radius: 12px;
       color: var(--white);
-      font-family: 'Poppins', sans-serif;
+      font-family: var(--font);
       font-size: .88rem;
       outline: none;
-      transition: border-color var(--transition), box-shadow var(--transition);
+      transition: border-color .2s, background .2s;
       appearance: none;
     }
-
     .form-group input::placeholder,
-    .form-group textarea::placeholder { color: #555; }
-
+    .form-group textarea::placeholder { color: var(--muted-2); }
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus {
       border-color: var(--orange);
-      box-shadow: 0 0 0 3px rgba(232,101,10,.12);
+      background: rgba(232,101,10,.05);
     }
+    .form-group input.err,
+    .form-group select.err,
+    .form-group textarea.err { border-color: #ff4545; }
+    .form-group option  { background: #1c1c1c; }
+    .form-group textarea { min-height: 110px; resize: vertical; }
+    .form-group.col2 { grid-column: 1 / -1; }
 
-    .form-group input.error,
-    .form-group select.error,
-    .form-group textarea.error { border-color: #e02020; }
-
-    .form-group textarea { resize: vertical; min-height: 110px; }
-    .form-group option { background: var(--dark-3); }
-
-    .form-error {
-      font-size: .75rem;
+    .form-err-msg {
+      font-size: .72rem;
       color: #ff6060;
       display: none;
     }
+    .form-err-msg.show { display: block; }
 
-    .form-error.visible { display: block; }
-
-    .form-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    .btn-submit {
+      width: 100%;
       margin-top: 8px;
+      padding: 15px;
+      background: var(--orange);
+      color: var(--white);
+      border: none;
+      border-radius: 50px;
+      font-family: var(--font);
+      font-size: .9rem;
+      font-weight: 700;
+      letter-spacing: -.01em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background .2s, transform .2s;
     }
-
-    .form-actions .selector-btn { border-radius: 6px; }
+    .btn-submit:hover { background: var(--orange-lt); transform: scale(1.01); }
 
     .form-legal {
-      font-size: .73rem;
-      color: #555;
+      font-size: .72rem;
+      color: var(--muted-2);
       line-height: 1.5;
+      margin-top: 10px;
+      text-align: center;
     }
 
     /* Succès */
@@ -1000,43 +931,25 @@
       display: none;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       text-align: center;
-      gap: 16px;
-      padding: 40px;
-      min-height: 200px;
+      gap: 14px;
+      padding: 32px;
     }
-
-    .form-success.visible { display: flex; }
-
-    .form-success i {
-      font-size: 3rem;
-      color: var(--orange);
-    }
-
-    .form-success h3 {
-      font-size: 1.2rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: -.01em;
-    }
-
-    .form-success p {
-      font-size: .88rem;
-      color: var(--grey);
-    }
-
+    .form-success.show { display: flex; }
+    .form-success i { font-size: 3rem; color: var(--orange); }
+    .form-success h3 { font-size: 1.3rem; font-weight: 800; letter-spacing: -.03em; }
+    .form-success p  { font-size: .88rem; color: var(--muted); }
 
     /* ============================================================
        FOOTER
     ============================================================ */
     #footer {
-      background: var(--dark-2);
+      background: var(--bg-1);
       border-top: 1px solid var(--border);
-      padding: 60px 0 28px;
+      padding: 64px 0 32px;
     }
 
-    .footer-top {
+    .footer-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 40px;
@@ -1045,74 +958,59 @@
     }
 
     .footer-brand p {
-      font-size: .85rem;
-      color: var(--grey);
+      font-size: .84rem;
+      color: var(--muted);
       line-height: 1.7;
       margin-top: 14px;
-      max-width: 280px;
+      max-width: 260px;
     }
 
-    .social-links {
+    .socials {
       display: flex;
       gap: 10px;
       margin-top: 20px;
     }
-
-    .social-links a {
+    .socials a {
       width: 36px; height: 36px;
-      border-radius: 6px;
-      background: var(--dark-3);
-      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-3);
+      border: 1px solid var(--border-hi);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--grey);
+      color: var(--muted);
       font-size: .85rem;
-      transition: background var(--transition), color var(--transition), border-color var(--transition);
+      transition: background .2s, color .2s, border-color .2s;
     }
+    .socials a:hover { background: var(--orange); border-color: var(--orange); color: var(--white); }
 
-    .social-links a:hover {
-      background: var(--orange);
-      border-color: var(--orange);
-      color: var(--white);
-    }
-
-    .footer-col h4 {
-      font-size: .72rem;
+    .footer-col h5 {
+      font-size: .68rem;
       font-weight: 700;
       letter-spacing: .1em;
       text-transform: uppercase;
       color: var(--white);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
-
-    .footer-col ul {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .footer-col ul li a {
+    .footer-col ul { display: flex; flex-direction: column; gap: 11px; }
+    .footer-col ul a {
       font-size: .84rem;
-      color: var(--grey);
-      transition: color var(--transition);
+      color: var(--muted);
+      transition: color .2s;
     }
-
-    .footer-col ul li a:hover { color: var(--orange); }
+    .footer-col ul a:hover { color: var(--orange); }
 
     .footer-bottom {
       display: flex;
       flex-direction: column;
       gap: 6px;
       margin-top: 28px;
-      font-size: .74rem;
-      color: #444;
+      font-size: .75rem;
+      color: rgba(255,255,255,.25);
       text-align: center;
     }
-
-    .footer-bottom a { color: #555; transition: color var(--transition); }
+    .footer-bottom a { color: rgba(255,255,255,.3); transition: color .2s; }
     .footer-bottom a:hover { color: var(--orange); }
-
 
     /* ============================================================
        BACK TO TOP
@@ -1120,38 +1018,35 @@
     #back-top {
       position: fixed;
       bottom: 24px; right: 20px;
-      width: 42px; height: 42px;
-      border-radius: 6px;
-      background: var(--orange);
+      width: 44px; height: 44px;
+      background: var(--bg-3);
+      border: 1px solid var(--border-hi);
+      border-radius: 50%;
       color: var(--white);
-      border: none;
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: .9rem;
+      cursor: pointer;
       opacity: 0;
       pointer-events: none;
       transform: translateY(12px);
-      transition: opacity var(--transition), transform var(--transition), background var(--transition);
+      transition: opacity .3s, transform .3s, background .2s;
       z-index: 800;
     }
-
-    #back-top.visible { opacity: 1; pointer-events: auto; transform: none; }
-    #back-top:hover { background: var(--orange-lt); }
-
+    #back-top.show { opacity: 1; pointer-events: auto; transform: none; }
+    #back-top:hover { background: var(--orange); border-color: var(--orange); }
 
     /* ============================================================
        RESPONSIVE 768px
     ============================================================ */
     @media (min-width: 768px) {
-      .selector-fields { grid-template-columns: 1fr 1fr; }
+      .wf-grid { grid-template-columns: 1fr 1fr; }
       .services-grid { grid-template-columns: 1fr 1fr 1fr; }
-      .arguments-grid { grid-template-columns: 1fr 1fr; }
-      .chiffres-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+      .bento { grid-template-columns: 1fr 1fr; }
+      .chiffres-inner { grid-template-columns: repeat(4, 1fr); gap: 24px; }
       .form-grid { grid-template-columns: 1fr 1fr; }
-      .form-group.full { grid-column: 1 / -1; }
-      .footer-top { grid-template-columns: 1.6fr 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1.8fr 1fr 1fr; }
       .footer-bottom { flex-direction: row; justify-content: space-between; text-align: left; }
     }
 
@@ -1159,23 +1054,20 @@
        RESPONSIVE 1024px
     ============================================================ */
     @media (min-width: 1024px) {
-      .pourquoi-layout {
-        grid-template-columns: 340px 1fr;
-        gap: 80px;
-        align-items: start;
-      }
-
-      .pourquoi-left { position: sticky; top: 90px; }
-
-      .contact-layout { grid-template-columns: 360px 1fr; gap: 80px; align-items: start; }
-
-      .contact-left { position: sticky; top: 90px; }
+      .contact-grid { grid-template-columns: 360px 1fr; gap: 80px; align-items: start; }
+      .contact-left { position: sticky; top: 84px; }
     }
 
-    /* Mobile — masquer nav */
+    /* Mobile : masquer nav bureau */
     @media (max-width: 767px) {
-      .nav-links { display: none; }
+      nav.main-nav { display: none; }
+      .nav-cta.desktop { display: none; }
       .burger { display: flex; }
+      .hero-widget { flex-direction: column; }
+      .widget-sell { flex: none; min-width: 0; }
+      .widget-sell:hover { flex: none; }
+      .sell-args { max-height: 200px; opacity: 1; }
+      .wf-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -1185,41 +1077,38 @@
        HEADER
   ============================================================ -->
   <header id="header">
-    <div class="container">
-      <div class="header-inner">
+    <div class="header-inner">
 
-        <a href="#accueil" class="logo" aria-label="ALB Auto 73">
-          <img src="logo-albauto.png" alt="Logo ALB Auto 73"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-          <div class="logo-text" style="display:none;">
-            <span class="l-alb">ALB</span>
-            <span class="l-auto">Auto</span>
-            <span class="l-dept">73</span>
-          </div>
-        </a>
+      <a href="#accueil" class="logo" aria-label="ALB Auto 73">
+        <img src="logo-albauto.png" alt="Logo ALB Auto 73"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <div class="logo-text" style="display:none;">
+          <span class="la">ALB</span><span class="lb">Auto</span><span class="lc">73</span>
+        </div>
+      </a>
 
-        <nav class="nav-links">
-          <a href="#accueil">Accueil</a>
-          <a href="#services">Services</a>
-          <a href="#pourquoi">À propos</a>
-          <a href="#contact" class="nav-btn">
-            <i class="fa-solid fa-phone-flip"></i> Contact
-          </a>
-        </nav>
+      <nav class="main-nav">
+        <a href="#accueil">Accueil</a>
+        <a href="#services">Services</a>
+        <a href="#pourquoi">À propos</a>
+        <a href="#contact">Contact</a>
+      </nav>
 
-        <button class="burger" id="burger" aria-label="Menu" aria-expanded="false">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
+      <a href="#contact" class="nav-cta desktop">
+        <i class="fa-solid fa-phone-flip"></i> Prendre contact
+      </a>
+
+      <button class="burger" id="burger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
 
     <nav class="mobile-nav" id="mobile-nav">
       <a href="#accueil">Accueil</a>
       <a href="#services">Services</a>
       <a href="#pourquoi">À propos</a>
-      <a href="#contact" class="nav-btn">
-        <i class="fa-solid fa-phone-flip"></i> Contact
-      </a>
+      <a href="#contact">Contact</a>
+      <a href="#contact" class="nav-cta">Prendre contact</a>
     </nav>
   </header>
 
@@ -1228,118 +1117,118 @@
        HERO
   ============================================================ -->
   <section id="accueil">
-    <div class="hero-glow"></div>
-    <div class="container">
-      <div class="hero-inner fade-in">
+    <div class="hero-glow-a"></div>
+    <div class="hero-glow-b"></div>
 
-        <div class="hero-location">
-          <span></span>
-          Savoie — département 73 &amp; Isère
-        </div>
+    <div class="hero-container reveal">
 
-        <h1 class="hero-title">
-          <div>Votre véhicule</div>
-          <div class="line-orange">mérite mieux</div>
-          <div class="line-dim">qu'une annonce</div>
-        </h1>
+      <div class="hero-pill">
+        <span class="dot"></span>
+        Savoie · Albertville · Isère
+      </div>
 
-        <p class="hero-sub">
-          ALB Auto 73 rachète, vend et gère vos mandats de vente en Savoie.
-          Zéro compromis sur la transparence.
-        </p>
+      <h1 class="hero-title">
+        <div class="plain">Votre véhicule</div>
+        <div class="grad">mérite mieux</div>
+        <div class="dim">qu'une annonce</div>
+      </h1>
 
-        <!-- Widget split ACHETER / VENDRE -->
-        <div class="hero-widget" role="region" aria-label="Recherche véhicule">
+      <p class="hero-sub">
+        ALB Auto 73 rachète, vend et gère vos mandats de vente en Savoie.
+        Zéro compromis sur la transparence, zéro frais caché.
+      </p>
 
-          <!-- Panneau gauche : ACHETER -->
-          <div class="widget-buy">
-            <div class="widget-header">
-              <div class="widget-label">Acheter<br>un véhicule</div>
-              <div class="widget-count">
-                <strong>+20</strong>
-                <span>véhicules<br>en stock</span>
-              </div>
-            </div>
+      <!-- Widget ACHETER / VENDRE -->
+      <div class="hero-widget" role="region" aria-label="Recherche véhicule">
 
-            <div class="widget-fields">
-              <div class="wf-row">
-                <select aria-label="Type de véhicule">
-                  <option value="">Type de véhicule</option>
-                  <option>Citadine</option>
-                  <option>Berline</option>
-                  <option>SUV / 4×4</option>
-                  <option>Break</option>
-                  <option>Utilitaire</option>
-                </select>
-                <select aria-label="Budget">
-                  <option value="">Budget max.</option>
-                  <option>– de 5 000 €</option>
-                  <option>5 – 10 000 €</option>
-                  <option>10 – 20 000 €</option>
-                  <option>20 – 35 000 €</option>
-                  <option>+ 35 000 €</option>
-                </select>
-              </div>
-              <div class="wf-row">
-                <select aria-label="Carburant">
-                  <option value="">Carburant</option>
-                  <option>Essence</option>
-                  <option>Diesel</option>
-                  <option>Hybride</option>
-                  <option>Électrique</option>
-                </select>
-                <select aria-label="Kilométrage">
-                  <option value="">Kilométrage</option>
-                  <option>– de 50 000 km</option>
-                  <option>50 – 100 000 km</option>
-                  <option>100 – 150 000 km</option>
-                  <option>+ 150 000 km</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="widget-cta">
-              <button class="widget-more" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">+ d'options</button>
-              <button class="selector-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-                Rechercher <i class="fa-solid fa-chevron-right"></i>
-              </button>
+        <!-- Panneau gauche : ACHETER -->
+        <div class="widget-buy">
+          <div class="widget-head">
+            <div class="widget-label">Acheter<br>un véhicule</div>
+            <div class="widget-stock">
+              <strong>+20</strong>
+              <span>véhicules<br>en stock</span>
             </div>
           </div>
 
-          <!-- Panneau droit : VENDRE (révèle les arguments au survol) -->
-          <div class="widget-sell" role="button" tabindex="0"
-               onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})"
-               onkeydown="if(event.key==='Enter')document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-            <div class="widget-header">
-              <div class="widget-label">Vendre<br>votre véhicule</div>
-              <div class="widget-count">
-                <strong>24h</strong>
-                <span>délai de<br>réponse</span>
-              </div>
-            </div>
+          <div class="wf-grid">
+            <select aria-label="Type de véhicule">
+              <option value="">Type de véhicule</option>
+              <option>Citadine</option>
+              <option>Berline</option>
+              <option>SUV / 4×4</option>
+              <option>Break</option>
+              <option>Utilitaire</option>
+            </select>
+            <select aria-label="Budget">
+              <option value="">Budget max.</option>
+              <option>– de 5 000 €</option>
+              <option>5 – 10 000 €</option>
+              <option>10 – 20 000 €</option>
+              <option>20 – 35 000 €</option>
+              <option>+ 35 000 €</option>
+            </select>
+            <select aria-label="Carburant">
+              <option value="">Carburant</option>
+              <option>Essence</option>
+              <option>Diesel</option>
+              <option>Hybride</option>
+              <option>Électrique</option>
+            </select>
+            <select aria-label="Kilométrage">
+              <option value="">Kilométrage</option>
+              <option>– de 50 000 km</option>
+              <option>50 – 100 000 km</option>
+              <option>100 – 150 000 km</option>
+              <option>+ 150 000 km</option>
+            </select>
+          </div>
 
-            <!-- Arguments clés révélés au survol -->
-            <div class="sell-args" aria-hidden="true">
-              <div class="sell-arg"><i class="fa-solid fa-check"></i> Estimation gratuite &amp; sans engagement</div>
-              <div class="sell-arg"><i class="fa-solid fa-check"></i> Paiement immédiat et sécurisé</div>
-              <div class="sell-arg"><i class="fa-solid fa-check"></i> Mandat : on vend à votre place</div>
-              <div class="sell-arg"><i class="fa-solid fa-check"></i> Démarches administratives incluses</div>
-            </div>
-
-            <button class="sell-cta">
-              Obtenir une cote <i class="fa-solid fa-arrow-right"></i>
+          <div class="widget-foot">
+            <button class="link-more" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">+ d'options</button>
+            <button class="btn-search" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+              Rechercher <i class="fa-solid fa-chevron-right"></i>
             </button>
           </div>
-
         </div>
 
-        <div class="hero-trust">
-          <div class="trust-item"><i class="fa-solid fa-shield-halved"></i> Véhicules garantis</div>
-          <div class="trust-item"><i class="fa-solid fa-handshake"></i> Pros &amp; particuliers</div>
-          <div class="trust-item"><i class="fa-solid fa-clock"></i> Réponse sous 24h</div>
+        <!-- Panneau droit : VENDRE -->
+        <div class="widget-sell" role="button" tabindex="0"
+             onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})"
+             onkeydown="if(event.key==='Enter')document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+
+          <div class="widget-head">
+            <div class="widget-label">Vendre<br>votre véhicule</div>
+            <div class="widget-stock">
+              <strong>24h</strong>
+              <span>délai de<br>réponse</span>
+            </div>
+          </div>
+
+          <div class="sell-badge">
+            <i class="fa-solid fa-bolt"></i> Estimation gratuite
+          </div>
+
+          <div class="sell-args" aria-hidden="true">
+            <div class="sell-arg"><i class="fa-solid fa-check"></i> Paiement immédiat et sécurisé</div>
+            <div class="sell-arg"><i class="fa-solid fa-check"></i> Mandat : on vend à votre place</div>
+            <div class="sell-arg"><i class="fa-solid fa-check"></i> Démarches administratives incluses</div>
+            <div class="sell-arg"><i class="fa-solid fa-check"></i> Particuliers &amp; professionnels</div>
+          </div>
+
+          <button class="sell-cta">
+            Obtenir une cote <i class="fa-solid fa-arrow-right"></i>
+          </button>
         </div>
 
       </div>
+
+      <div class="hero-trust">
+        <div class="trust-item"><i class="fa-solid fa-shield-halved"></i> Véhicules garantis</div>
+        <div class="trust-item"><i class="fa-solid fa-map-pin"></i> 100 % local Savoie</div>
+        <div class="trust-item"><i class="fa-solid fa-clock"></i> Réponse sous 24 h</div>
+      </div>
+
     </div>
   </section>
 
@@ -1348,119 +1237,104 @@
        SERVICES
   ============================================================ -->
   <section id="services">
-    <div class="container">
+    <div class="section-wrap">
 
-      <div class="services-header fade-in">
-        <span class="tag">Nos services</span>
-        <h2 class="section-title">Ce que<br><em>nous faisons</em></h2>
-        <div class="divider"></div>
+      <div class="services-top reveal">
+        <span class="section-eyebrow">Nos services</span>
+        <h2 class="section-h">Ce que<br>nous <em>faisons</em></h2>
+        <p class="section-lead">Que vous souhaitiez acheter, vendre ou confier la vente de votre véhicule, ALB Auto 73 vous accompagne avec sérieux et simplicité.</p>
       </div>
 
-      <div class="services-grid fade-in">
+      <div class="services-grid reveal">
 
-        <article class="service-card">
-          <div class="service-num">01 — Achat</div>
+        <article class="svc-card">
+          <div class="svc-num">01 — Achat</div>
           <h3>Rachat de véhicules</h3>
           <p>Vous vendez, on rachète. Estimation honnête, paiement rapide, démarches incluses.</p>
-          <ul>
+          <ul class="svc-list">
             <li><i class="fa-solid fa-check"></i> Estimation gratuite &amp; sans engagement</li>
             <li><i class="fa-solid fa-check"></i> Paiement immédiat et sécurisé</li>
-            <li><i class="fa-solid fa-check"></i> Particuliers &amp; flottes pro</li>
-            <li><i class="fa-solid fa-check"></i> Gestion des formalités admin</li>
+            <li><i class="fa-solid fa-check"></i> Particuliers &amp; flottes professionnelles</li>
+            <li><i class="fa-solid fa-check"></i> Formalités administratives prises en charge</li>
           </ul>
-          <span class="service-arrow">
+          <span class="svc-link" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'});return false;">
             Demander une cote <i class="fa-solid fa-arrow-right"></i>
           </span>
         </article>
 
-        <article class="service-card">
-          <div class="service-num">02 — Vente</div>
+        <article class="svc-card">
+          <div class="svc-num">02 — Vente</div>
           <h3>Revente de véhicules</h3>
           <p>Un stock sélectionné, contrôlé, documenté. Achetez sereinement en Savoie.</p>
-          <ul>
+          <ul class="svc-list">
             <li><i class="fa-solid fa-check"></i> Véhicules vérifiés &amp; garantis</li>
             <li><i class="fa-solid fa-check"></i> Historiques d'entretien disponibles</li>
             <li><i class="fa-solid fa-check"></i> Financement possible</li>
             <li><i class="fa-solid fa-check"></i> Essai avant achat</li>
           </ul>
-          <span class="service-arrow">
+          <span class="svc-link" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'});return false;">
             Voir le stock <i class="fa-solid fa-arrow-right"></i>
           </span>
         </article>
 
-        <article class="service-card">
-          <div class="service-num">03 — Mandat</div>
+        <article class="svc-card">
+          <div class="svc-num">03 — Mandat</div>
           <h3>Mandat de vente</h3>
           <p>On vend votre voiture à votre place. Vous fixez votre prix, on gère le reste.</p>
-          <ul>
+          <ul class="svc-list">
             <li><i class="fa-solid fa-check"></i> Diffusion multi-plateformes</li>
             <li><i class="fa-solid fa-check"></i> Visites &amp; négociations gérées</li>
-            <li><i class="fa-solid fa-check"></i> Vous touchez votre prix</li>
+            <li><i class="fa-solid fa-check"></i> Vous touchez votre prix de vente</li>
             <li><i class="fa-solid fa-check"></i> Zéro tracas, zéro démarche</li>
           </ul>
-          <span class="service-arrow">
+          <span class="svc-link" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'});return false;">
             En savoir plus <i class="fa-solid fa-arrow-right"></i>
           </span>
         </article>
 
       </div>
-
     </div>
   </section>
 
 
   <!-- ============================================================
-       POURQUOI ALB AUTO 73
+       POURQUOI — BENTO
   ============================================================ -->
   <section id="pourquoi">
-    <div class="container">
-      <div class="pourquoi-layout">
+    <div class="section-wrap">
 
-        <div class="pourquoi-left fade-in">
-          <span class="tag">Pourquoi nous</span>
-          <h2 class="section-title">4 raisons<br>de nous<br><em>faire confiance</em></h2>
-          <div class="divider"></div>
-          <p>Local, transparent, réactif. Pas de jargon, pas de frais cachés. Juste du sérieux, ancré en Savoie.</p>
-          <a href="#contact" class="selector-btn" style="margin-top:8px;max-width:260px;">
-            <i class="fa-solid fa-arrow-right"></i> Prendre contact
-          </a>
+      <div class="pourquoi-head reveal">
+        <span class="section-eyebrow">Pourquoi nous choisir</span>
+        <h2 class="section-h">4 raisons de nous<br><em>faire confiance</em></h2>
+        <p class="section-lead">Local, transparent, réactif. Pas de jargon, pas de frais cachés. Juste du sérieux, ancré à Albertville.</p>
+      </div>
+
+      <div class="bento reveal">
+
+        <div class="bento-card">
+          <div class="bento-num">01</div>
+          <h3>Expertise automobile</h3>
+          <p>Une connaissance approfondie du marché local pour estimer et céder chaque véhicule au juste prix, sans surenchère.</p>
         </div>
 
-        <div class="arguments-grid fade-in">
-
-          <div class="argument-card">
-            <div class="arg-num">01</div>
-            <div class="arg-content">
-              <h3>Expertise automobile</h3>
-              <p>Une connaissance approfondie du marché local pour estimer et céder chaque véhicule au juste prix, sans surenchère.</p>
-            </div>
-          </div>
-
-          <div class="argument-card">
-            <div class="arg-num">02</div>
-            <div class="arg-content">
-              <h3>Transparence totale</h3>
-              <p>Zéro frais caché, zéro mauvaise surprise. Chaque étape est documentée et expliquée clairement avant signature.</p>
-            </div>
-          </div>
-
-          <div class="argument-card">
-            <div class="arg-num">03</div>
-            <div class="arg-content">
-              <h3>Ancrage local Savoie</h3>
-              <p>Un interlocuteur unique, joignable, basé en Savoie (73) et actif sur l'Isère (38). Pas un call-center, une vraie personne.</p>
-            </div>
-          </div>
-
-          <div class="argument-card">
-            <div class="arg-num">04</div>
-            <div class="arg-content">
-              <h3>Réactivité garantie</h3>
-              <p>Réponse sous 24 h. Du premier contact à la signature, on respecte votre temps sans vous faire courir.</p>
-            </div>
-          </div>
-
+        <div class="bento-card">
+          <div class="bento-num">02</div>
+          <h3>Transparence totale</h3>
+          <p>Zéro frais caché, zéro mauvaise surprise. Chaque étape est documentée et expliquée clairement avant signature.</p>
         </div>
+
+        <div class="bento-card">
+          <div class="bento-num">03</div>
+          <h3>Ancrage local Savoie</h3>
+          <p>Un interlocuteur unique, joignable, basé à Albertville (73) et actif sur l'Isère (38). Pas un call-center, une vraie personne.</p>
+        </div>
+
+        <div class="bento-card">
+          <div class="bento-num">04</div>
+          <h3>Réactivité garantie</h3>
+          <p>Réponse sous 24 h. Du premier contact à la signature, on respecte votre temps sans vous faire courir.</p>
+        </div>
+
       </div>
     </div>
   </section>
@@ -1470,27 +1344,27 @@
        CHIFFRES
   ============================================================ -->
   <section id="chiffres">
-    <div class="container">
-      <div class="chiffres-grid fade-in">
+    <div class="section-wrap">
+      <div class="chiffres-inner reveal">
 
-        <div class="chiffre-item">
-          <div class="chiffre-number" data-target="150">0</div>
-          <div class="chiffre-label">Véhicules traités</div>
+        <div class="ch-item">
+          <div class="ch-num" data-target="150">0</div>
+          <div class="ch-label">Véhicules traités</div>
         </div>
 
-        <div class="chiffre-item">
-          <div class="chiffre-number" data-target="10">0</div>
-          <div class="chiffre-label">Ans d'expérience</div>
+        <div class="ch-item">
+          <div class="ch-num" data-target="10">0</div>
+          <div class="ch-label">Ans d'expérience</div>
         </div>
 
-        <div class="chiffre-item">
-          <div class="chiffre-number" data-target="2">0</div>
-          <div class="chiffre-label">Départements (73 &amp; 38)</div>
+        <div class="ch-item">
+          <div class="ch-num" data-target="2">0</div>
+          <div class="ch-label">Départements couverts</div>
         </div>
 
-        <div class="chiffre-item">
-          <div class="chiffre-number">24<span class="chiffre-unit">h</span></div>
-          <div class="chiffre-label">Délai de réponse</div>
+        <div class="ch-item">
+          <div class="ch-num">24<span class="unit">h</span></div>
+          <div class="ch-label">Délai de réponse</div>
         </div>
 
       </div>
@@ -1502,33 +1376,35 @@
        CONTACT
   ============================================================ -->
   <section id="contact">
-    <div class="container">
-      <div class="contact-layout">
+    <div class="section-wrap">
+      <div class="contact-grid">
 
-        <div class="contact-left fade-in">
-          <span class="tag">Contact</span>
-          <h2 class="section-title">Parlons<br>de votre<br><em>projet</em></h2>
-          <div class="divider"></div>
-          <p>Un achat, une vente, un mandat ? Décrivez votre besoin, notre équipe revient vers vous sous 24 h.</p>
+        <!-- Gauche -->
+        <div class="contact-left reveal">
+          <div>
+            <span class="section-eyebrow">Contact</span>
+            <h2 class="section-h">Parlons de<br>votre <em>projet</em></h2>
+            <p class="section-lead">Un achat, une vente, un mandat ? Notre équipe revient vers vous sous 24 h.</p>
+          </div>
 
-          <div class="contact-info-list">
-            <div class="ci-row">
-              <i class="fa-solid fa-location-dot"></i>
-              <div>
+          <div class="contact-info">
+            <div class="ci">
+              <div class="ci-ico"><i class="fa-solid fa-location-dot"></i></div>
+              <div class="ci-text">
                 <strong>27 chemin de la Fonderie</strong>
                 <span>73200 Albertville — Savoie</span>
               </div>
             </div>
-            <div class="ci-row">
-              <i class="fa-solid fa-phone"></i>
-              <div>
+            <div class="ci">
+              <div class="ci-ico"><i class="fa-solid fa-phone"></i></div>
+              <div class="ci-text">
                 <strong>+33 (0)6 XX XX XX XX</strong>
                 <span>Lun – Sam, 9h – 19h</span>
               </div>
             </div>
-            <div class="ci-row">
-              <i class="fa-solid fa-envelope"></i>
-              <div>
+            <div class="ci">
+              <div class="ci-ico"><i class="fa-solid fa-envelope"></i></div>
+              <div class="ci-text">
                 <strong>contact@albauto73.fr</strong>
                 <span>Réponse sous 24 h</span>
               </div>
@@ -1536,7 +1412,9 @@
           </div>
         </div>
 
-        <div class="contact-form fade-in">
+        <!-- Formulaire -->
+        <div class="contact-form reveal">
+          <p class="form-title">Envoyer un message</p>
 
           <form id="contact-form" novalidate>
             <div class="form-grid">
@@ -1544,55 +1422,53 @@
               <div class="form-group">
                 <label for="f-nom">Nom complet *</label>
                 <input type="text" id="f-nom" name="nom" placeholder="Jean Dupont" autocomplete="name" />
-                <span class="form-error" id="err-nom">Veuillez saisir votre nom.</span>
+                <span class="form-err-msg" id="e-nom">Veuillez saisir votre nom.</span>
               </div>
 
               <div class="form-group">
                 <label for="f-tel">Téléphone *</label>
                 <input type="tel" id="f-tel" name="telephone" placeholder="06 00 00 00 00" autocomplete="tel" />
-                <span class="form-error" id="err-tel">Numéro invalide.</span>
+                <span class="form-err-msg" id="e-tel">Numéro invalide (min. 9 chiffres).</span>
               </div>
 
-              <div class="form-group">
-                <label for="f-email">Email *</label>
+              <div class="form-group col2">
+                <label for="f-email">Adresse e-mail *</label>
                 <input type="email" id="f-email" name="email" placeholder="jean@exemple.fr" autocomplete="email" />
-                <span class="form-error" id="err-email">Adresse invalide.</span>
+                <span class="form-err-msg" id="e-email">Adresse e-mail invalide.</span>
               </div>
 
-              <div class="form-group">
+              <div class="form-group col2">
                 <label for="f-demande">Type de demande *</label>
                 <select id="f-demande" name="demande">
                   <option value="">— Sélectionner —</option>
                   <option value="achat">Acheter un véhicule</option>
                   <option value="vente">Vendre mon véhicule</option>
                   <option value="mandat">Mandat de vente</option>
-                  <option value="info">Renseignement</option>
+                  <option value="info">Renseignement général</option>
                 </select>
-                <span class="form-error" id="err-demande">Choisissez un type de demande.</span>
+                <span class="form-err-msg" id="e-demande">Veuillez choisir un type de demande.</span>
               </div>
 
-              <div class="form-group full">
+              <div class="form-group col2">
                 <label for="f-message">Votre message</label>
-                <textarea id="f-message" name="message" placeholder="Décrivez votre véhicule ou votre besoin..."></textarea>
+                <textarea id="f-message" name="message" placeholder="Décrivez votre véhicule ou votre besoin…"></textarea>
               </div>
 
             </div>
 
-            <div class="form-actions">
-              <button type="submit" class="selector-btn">
-                <i class="fa-solid fa-paper-plane"></i> Envoyer ma demande
-              </button>
-              <p class="form-legal">Champs * obligatoires. Données utilisées uniquement pour traiter votre demande (RGPD).</p>
-            </div>
+            <button type="submit" class="btn-submit">
+              <i class="fa-solid fa-paper-plane"></i> Envoyer ma demande
+            </button>
+            <p class="form-legal">Champs * obligatoires. Données utilisées uniquement pour traiter votre demande (RGPD).</p>
           </form>
 
           <div class="form-success" id="form-success" role="alert">
             <i class="fa-solid fa-circle-check"></i>
             <h3>Message envoyé !</h3>
-            <p>Notre équipe vous recontacte sous 24 h.</p>
+            <p>Notre équipe vous recontacte dans les 24 h.</p>
           </div>
-
         </div>
+
       </div>
     </div>
   </section>
@@ -1602,21 +1478,19 @@
        FOOTER
   ============================================================ -->
   <footer id="footer">
-    <div class="container">
-      <div class="footer-top">
+    <div class="section-wrap">
+      <div class="footer-grid">
 
         <div class="footer-brand">
           <a href="#accueil" class="logo" aria-label="ALB Auto 73">
-            <img src="logo-albauto.png" alt="Logo ALB Auto 73" style="height:38px;"
-                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <img src="logo-albauto.png" alt="Logo ALB Auto 73" style="height:34px;"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
             <div class="logo-text" style="display:none;">
-              <span class="l-alb">ALB</span>
-              <span class="l-auto">Auto</span>
-              <span class="l-dept">73</span>
+              <span class="la">ALB</span><span class="lb">Auto</span><span class="lc">73</span>
             </div>
           </a>
           <p>Achat, vente et mandat de véhicules en Savoie et Isère. Transparence &amp; proximité.</p>
-          <div class="social-links">
+          <div class="socials">
             <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
             <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
             <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
@@ -1624,7 +1498,7 @@
         </div>
 
         <div class="footer-col">
-          <h4>Services</h4>
+          <h5>Services</h5>
           <ul>
             <li><a href="#services">Rachat de véhicules</a></li>
             <li><a href="#services">Revente de véhicules</a></li>
@@ -1634,7 +1508,7 @@
         </div>
 
         <div class="footer-col">
-          <h4>Informations</h4>
+          <h5>Informations</h5>
           <ul>
             <li><a href="#pourquoi">À propos</a></li>
             <li><a href="#contact">Contact</a></li>
@@ -1652,77 +1526,64 @@
     </div>
   </footer>
 
-  <button id="back-top" aria-label="Revenir en haut">
+  <button id="back-top" aria-label="Haut de page">
     <i class="fa-solid fa-chevron-up"></i>
   </button>
 
 
   <!-- ============================================================
-       JAVASCRIPT
+       JS
   ============================================================ -->
   <script>
-    /* -- Header burger -- */
+    /* Burger */
     const burger    = document.getElementById('burger');
     const mobileNav = document.getElementById('mobile-nav');
-
     burger.addEventListener('click', () => {
       const open = mobileNav.classList.toggle('open');
       burger.classList.toggle('open', open);
       burger.setAttribute('aria-expanded', open);
     });
-
     mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
       mobileNav.classList.remove('open');
       burger.classList.remove('open');
       burger.setAttribute('aria-expanded', false);
     }));
 
+    /* Reveal scroll */
+    new IntersectionObserver((entries, obs) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.08 }).observe = (() => {
+      const io = new IntersectionObserver((entries, obs) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+      }, { threshold: 0.08 });
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    })();
 
-    /* -- Fade-in -- */
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-    /* -- Compteurs animés -- */
-    function animateCount(el, target, duration) {
-      let v = 0;
-      const step = Math.ceil(target / (duration / 16));
-      const t = setInterval(() => {
-        v = Math.min(v + step, target);
-        el.textContent = v;
-        if (v >= target) clearInterval(t);
-      }, 16);
-    }
-
-    const counterObs = new IntersectionObserver(entries => {
+    /* Compteurs */
+    new IntersectionObserver((entries, obs) => {
       entries.forEach(e => {
         if (!e.isIntersecting) return;
         e.target.querySelectorAll('[data-target]').forEach(el => {
-          animateCount(el, parseInt(el.dataset.target), 1000);
+          let v = 0, t = parseInt(el.dataset.target);
+          const step = Math.ceil(t / (1000 / 16));
+          const timer = setInterval(() => { v = Math.min(v + step, t); el.textContent = v; if (v >= t) clearInterval(timer); }, 16);
         });
-        counterObs.unobserve(e.target);
+        obs.unobserve(e.target);
       });
-    }, { threshold: 0.4 });
+    }, { threshold: 0.4 }).observe(document.querySelector('.chiffres-inner'));
 
-    const cg = document.querySelector('.chiffres-grid');
-    if (cg) counterObs.observe(cg);
+    /* Back to top */
+    const btt = document.getElementById('back-top');
+    window.addEventListener('scroll', () => btt.classList.toggle('show', scrollY > 400), { passive: true });
+    btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-    /* -- Back to top -- */
-    const backTop = document.getElementById('back-top');
-    window.addEventListener('scroll', () => backTop.classList.toggle('visible', scrollY > 400), { passive: true });
-    backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    /* Formulaire */
+    const form = document.getElementById('contact-form');
+    const fSuc = document.getElementById('form-success');
 
-    /* -- Formulaire -- */
-    const form        = document.getElementById('contact-form');
-    const formSuccess = document.getElementById('form-success');
-
-    function setError(fieldId, errId, show) {
-      document.getElementById(fieldId).classList.toggle('error', show);
-      document.getElementById(errId).classList.toggle('visible', show);
+    function setErr(id, eid, show) {
+      document.getElementById(id).classList.toggle('err', show);
+      document.getElementById(eid).classList.toggle('show', show);
     }
 
     form.addEventListener('submit', e => {
@@ -1733,21 +1594,19 @@
       const demande = document.getElementById('f-demande').value;
       let ok = true;
 
-      setError('f-nom',     'err-nom',     !nom);                                           if (!nom)     ok = false;
-      setError('f-tel',     'err-tel',     !/^[0-9\s\+\-\.]{9,15}$/.test(tel));            if (!/^[0-9\s\+\-\.]{9,15}$/.test(tel)) ok = false;
-      setError('f-email',   'err-email',   !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) ok = false;
-      setError('f-demande', 'err-demande', !demande);                                       if (!demande) ok = false;
+      setErr('f-nom',     'e-nom',     !nom);                                          if (!nom)     ok = false;
+      setErr('f-tel',     'e-tel',     !/^[0-9\s\+\-\.]{9,15}$/.test(tel));           if (!/^[0-9\s\+\-\.]{9,15}$/.test(tel)) ok = false;
+      setErr('f-email',   'e-email',   !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) ok = false;
+      setErr('f-demande', 'e-demande', !demande);                                      if (!demande) ok = false;
 
       if (!ok) return;
-
       form.style.display = 'none';
-      formSuccess.classList.add('visible');
+      fSuc.classList.add('show');
     });
 
     ['f-nom','f-tel','f-email','f-demande'].forEach(id => {
       const el = document.getElementById(id);
-      el.addEventListener('input',  () => el.classList.remove('error'));
-      el.addEventListener('change', () => el.classList.remove('error'));
+      ['input','change'].forEach(ev => el.addEventListener(ev, () => el.classList.remove('err')));
     });
   </script>
 </body>
