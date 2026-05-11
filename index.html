@@ -319,115 +319,282 @@
       margin-bottom: 52px;
     }
 
-    /* Sélecteur ACHETER / VENDRE */
-    .hero-selector {
+    /* ============================================================
+       WIDGET SPLIT — ACHETER / VENDRE
+    ============================================================ */
+    .hero-widget {
       width: 100%;
-      max-width: 700px;
-      background: var(--dark-2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      max-width: 860px;
+      display: flex;
+      border-radius: 14px;
       overflow: hidden;
+      border: 1px solid rgba(255,255,255,.1);
+      box-shadow: 0 24px 80px rgba(0,0,0,.6);
     }
 
-    .selector-tabs {
+    /* --- Panneau gauche : ACHETER --- */
+    .widget-buy {
+      flex: 1 1 60%;
+      background: #161616;
+      padding: 32px 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      border-right: 1px solid rgba(255,255,255,.07);
+      transition: flex var(--transition);
+      min-width: 0;
+    }
+
+    .widget-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .widget-label {
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -.01em;
+      line-height: 1.1;
+    }
+
+    .widget-count {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .widget-count strong {
+      display: block;
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--orange);
+      letter-spacing: -.04em;
+    }
+
+    .widget-count span {
+      font-size: .72rem;
+      font-weight: 500;
+      color: var(--grey);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    /* Champs */
+    .widget-fields {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .wf-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      border-bottom: 1px solid var(--border);
+      gap: 10px;
     }
 
-    .selector-tab {
-      padding: 16px 20px;
-      font-size: .85rem;
-      font-weight: 700;
-      letter-spacing: .08em;
+    .widget-fields select,
+    .widget-fields input {
+      width: 100%;
+      padding: 11px 14px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 6px;
+      color: var(--white);
+      font-family: 'Poppins', sans-serif;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .04em;
       text-transform: uppercase;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .widget-fields select:hover,
+    .widget-fields input:hover {
+      border-color: rgba(255,255,255,.3);
+      background: rgba(255,255,255,.04);
+    }
+
+    .widget-fields select:focus,
+    .widget-fields input:focus { border-color: var(--orange); }
+
+    .widget-fields option { background: #1a1a1a; text-transform: none; font-weight: 400; }
+
+    .widget-fields input::placeholder { color: rgba(255,255,255,.4); }
+
+    /* Bouton rechercher */
+    .widget-cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .widget-more {
+      font-size: .75rem;
+      font-weight: 600;
       color: var(--grey);
+      letter-spacing: .04em;
       cursor: pointer;
       border: none;
       background: none;
       font-family: 'Poppins', sans-serif;
-      transition: color var(--transition), background var(--transition);
-      position: relative;
+      transition: color var(--transition);
     }
 
-    .selector-tab::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--orange);
-      transform: scaleX(0);
-      transition: transform var(--transition);
-    }
-
-    .selector-tab.active {
-      color: var(--white);
-      background: rgba(232,101,10,.08);
-    }
-
-    .selector-tab.active::after { transform: scaleX(1); }
-
-    .selector-body {
-      padding: 20px 20px 22px;
-    }
-
-    .selector-panel { display: none; }
-    .selector-panel.active { display: block; }
-
-    .selector-fields {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .selector-fields select,
-    .selector-fields input {
-      width: 100%;
-      padding: 12px 16px;
-      background: var(--dark-3);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--white);
-      font-family: 'Poppins', sans-serif;
-      font-size: .85rem;
-      outline: none;
-      transition: border-color var(--transition);
-      appearance: none;
-      -webkit-appearance: none;
-      cursor: pointer;
-    }
-
-    .selector-fields select:focus,
-    .selector-fields input:focus {
-      border-color: var(--orange);
-    }
-
-    .selector-fields option { background: var(--dark-3); }
+    .widget-more:hover { color: var(--orange); }
 
     .selector-btn {
-      width: 100%;
-      padding: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
       background: var(--orange);
       color: var(--white);
       border: none;
       border-radius: 6px;
       font-family: 'Poppins', sans-serif;
-      font-size: .9rem;
+      font-size: .82rem;
       font-weight: 700;
-      letter-spacing: .06em;
+      letter-spacing: .07em;
       text-transform: uppercase;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: background var(--transition), transform var(--transition);
+      transition: background var(--transition), transform var(--transition), gap var(--transition);
     }
 
     .selector-btn:hover {
       background: var(--orange-lt);
       transform: translateY(-1px);
+      gap: 14px;
+    }
+
+    /* --- Panneau droit : VENDRE --- */
+    .widget-sell {
+      flex: 0 0 40%;
+      background: var(--orange);
+      padding: 32px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: flex .4s ease, background .3s ease;
+      min-width: 200px;
+    }
+
+    /* Motif géométrique sur le panneau VENDRE */
+    .widget-sell::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.08);
+      pointer-events: none;
+      transition: transform .4s ease;
+    }
+
+    .widget-sell:hover::before {
+      transform: scale(1.4);
+    }
+
+    .widget-sell::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -30px;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      background: rgba(0,0,0,.08);
+      pointer-events: none;
+    }
+
+    .widget-sell:hover {
+      background: var(--orange-lt);
+      flex: 0 0 48%;
+    }
+
+    .widget-sell .widget-label { color: var(--white); }
+
+    .widget-sell .widget-count strong { color: var(--white); }
+    .widget-sell .widget-count span   { color: rgba(255,255,255,.7); }
+
+    /* Arguments clés — masqués par défaut, révélés au survol */
+    .sell-args {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height .4s ease, opacity .35s ease .05s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .widget-sell:hover .sell-args {
+      max-height: 220px;
+      opacity: 1;
+    }
+
+    .sell-arg {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .8rem;
+      font-weight: 600;
+      color: rgba(255,255,255,.9);
+    }
+
+    .sell-arg i {
+      font-size: .75rem;
+      color: rgba(255,255,255,.7);
+      flex-shrink: 0;
+    }
+
+    /* CTA vendre */
+    .sell-cta {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 6px;
+      color: var(--white);
+      font-family: 'Poppins', sans-serif;
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background var(--transition), gap var(--transition);
+      align-self: flex-start;
+      margin-top: auto;
+    }
+
+    .sell-cta:hover {
+      background: rgba(255,255,255,.25);
+      gap: 14px;
+    }
+
+    /* Mobile : empilé */
+    @media (max-width: 600px) {
+      .hero-widget { flex-direction: column; }
+      .widget-sell { flex: none; min-width: 0; }
+      .widget-sell:hover { flex: none; }
+      .sell-args { max-height: 220px; opacity: 1; }
+      .wf-row { grid-template-columns: 1fr; }
     }
 
     /* Badges de confiance */
@@ -1081,61 +1248,89 @@
           Zéro compromis sur la transparence.
         </p>
 
-        <!-- Sélecteur ACHETER / VENDRE -->
-        <div class="hero-selector">
-          <div class="selector-tabs" role="tablist">
-            <button class="selector-tab active" id="tab-acheter" role="tab" aria-selected="true" aria-controls="panel-acheter">
-              <i class="fa-solid fa-car"></i>&nbsp; Acheter
-            </button>
-            <button class="selector-tab" id="tab-vendre" role="tab" aria-selected="false" aria-controls="panel-vendre">
-              <i class="fa-solid fa-hand-holding-dollar"></i>&nbsp; Vendre
-            </button>
-          </div>
+        <!-- Widget split ACHETER / VENDRE -->
+        <div class="hero-widget" role="region" aria-label="Recherche véhicule">
 
-          <div class="selector-body">
+          <!-- Panneau gauche : ACHETER -->
+          <div class="widget-buy">
+            <div class="widget-header">
+              <div class="widget-label">Acheter<br>un véhicule</div>
+              <div class="widget-count">
+                <strong>+20</strong>
+                <span>véhicules<br>en stock</span>
+              </div>
+            </div>
 
-            <!-- Panel Acheter -->
-            <div class="selector-panel active" id="panel-acheter" role="tabpanel">
-              <div class="selector-fields">
+            <div class="widget-fields">
+              <div class="wf-row">
                 <select aria-label="Type de véhicule">
                   <option value="">Type de véhicule</option>
                   <option>Citadine</option>
                   <option>Berline</option>
-                  <option>SUV / 4x4</option>
+                  <option>SUV / 4×4</option>
                   <option>Break</option>
                   <option>Utilitaire</option>
-                  <option>Autre</option>
                 </select>
                 <select aria-label="Budget">
-                  <option value="">Budget maximum</option>
-                  <option>Jusqu'à 5 000 €</option>
-                  <option>5 000 – 10 000 €</option>
-                  <option>10 000 – 20 000 €</option>
-                  <option>20 000 – 35 000 €</option>
+                  <option value="">Budget max.</option>
+                  <option>– de 5 000 €</option>
+                  <option>5 – 10 000 €</option>
+                  <option>10 – 20 000 €</option>
+                  <option>20 – 35 000 €</option>
                   <option>+ 35 000 €</option>
                 </select>
               </div>
-              <button class="selector-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-                <i class="fa-solid fa-magnifying-glass"></i> Voir les véhicules disponibles
-              </button>
-            </div>
-
-            <!-- Panel Vendre -->
-            <div class="selector-panel" id="panel-vendre" role="tabpanel">
-              <div class="selector-fields">
-                <select aria-label="Type de vente">
-                  <option value="">Type de vente</option>
-                  <option>Rachat immédiat</option>
-                  <option>Mandat de vente</option>
+              <div class="wf-row">
+                <select aria-label="Carburant">
+                  <option value="">Carburant</option>
+                  <option>Essence</option>
+                  <option>Diesel</option>
+                  <option>Hybride</option>
+                  <option>Électrique</option>
                 </select>
-                <input type="text" placeholder="Marque et modèle" aria-label="Marque et modèle" />
+                <select aria-label="Kilométrage">
+                  <option value="">Kilométrage</option>
+                  <option>– de 50 000 km</option>
+                  <option>50 – 100 000 km</option>
+                  <option>100 – 150 000 km</option>
+                  <option>+ 150 000 km</option>
+                </select>
               </div>
-              <button class="selector-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-                <i class="fa-solid fa-euro-sign"></i> Obtenir une estimation gratuite
-              </button>
             </div>
 
+            <div class="widget-cta">
+              <button class="widget-more" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">+ d'options</button>
+              <button class="selector-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+                Rechercher <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
           </div>
+
+          <!-- Panneau droit : VENDRE (révèle les arguments au survol) -->
+          <div class="widget-sell" role="button" tabindex="0"
+               onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})"
+               onkeydown="if(event.key==='Enter')document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+            <div class="widget-header">
+              <div class="widget-label">Vendre<br>votre véhicule</div>
+              <div class="widget-count">
+                <strong>24h</strong>
+                <span>délai de<br>réponse</span>
+              </div>
+            </div>
+
+            <!-- Arguments clés révélés au survol -->
+            <div class="sell-args" aria-hidden="true">
+              <div class="sell-arg"><i class="fa-solid fa-check"></i> Estimation gratuite &amp; sans engagement</div>
+              <div class="sell-arg"><i class="fa-solid fa-check"></i> Paiement immédiat et sécurisé</div>
+              <div class="sell-arg"><i class="fa-solid fa-check"></i> Mandat : on vend à votre place</div>
+              <div class="sell-arg"><i class="fa-solid fa-check"></i> Démarches administratives incluses</div>
+            </div>
+
+            <button class="sell-cta">
+              Obtenir une cote <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+
         </div>
 
         <div class="hero-trust">
@@ -1482,19 +1677,6 @@
       burger.setAttribute('aria-expanded', false);
     }));
 
-    /* -- Tabs ACHETER / VENDRE -- */
-    const tabs   = document.querySelectorAll('.selector-tab');
-    const panels = document.querySelectorAll('.selector-panel');
-
-    tabs.forEach((tab, i) => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', false); });
-        panels.forEach(p => p.classList.remove('active'));
-        tab.classList.add('active');
-        tab.setAttribute('aria-selected', true);
-        panels[i].classList.add('active');
-      });
-    });
 
     /* -- Fade-in -- */
     const observer = new IntersectionObserver(entries => {
