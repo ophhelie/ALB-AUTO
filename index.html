@@ -18,13 +18,13 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #000;
-      --bg-1:      #0a0a0a;
-      --bg-2:      #111;
-      --bg-3:      #1a1a1a;
+      --bg:        #060504;
+      --bg-1:      #0c0a08;
+      --bg-2:      #131210;
+      --bg-3:      #1c1a17;
       --orange:    #e8650a;
       --orange-lt: #ff7a20;
-      --white:     #fff;
+      --white:     #fefcfb;
       --muted:     rgba(255,255,255,.45);
       --muted-hi:  rgba(255,255,255,.7);
       --border:    rgba(255,255,255,.07);
@@ -226,9 +226,7 @@
     .hero-h .w1 { display:block; color:var(--white); }
     .hero-h .w2 {
       display:block;
-      background:linear-gradient(95deg,var(--orange-lt) 0%,#ffb347 50%,var(--orange) 100%);
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-      background-clip:text;
+      color:var(--orange-lt);
     }
     .hero-h .w3 {
       display:block;
@@ -320,7 +318,7 @@
       cursor:pointer; transition:background .2s,transform .2s;
     }
     @media (hover: hover) and (pointer: fine) {
-      .btn-go:hover { background:#e5e5e5; transform:scale(1.03); gap:12px; }
+      .btn-go:hover { background:#e5e5e5; transform:scale(1.03); }
     }
     .btn-go:active { transform:scale(0.97); transition:transform 100ms var(--ease); }
 
@@ -351,7 +349,7 @@
       transition:background .2s,transform .2s; position:relative; z-index:1;
     }
     @media (hover: hover) and (pointer: fine) {
-      .btn-sell:hover { background:var(--orange-lt); gap:12px; transform:scale(1.03); }
+      .btn-sell:hover { background:var(--orange-lt); transform:scale(1.03); }
     }
     .btn-sell:active { transform:scale(0.97); transition:transform 100ms var(--ease); }
 
@@ -414,8 +412,7 @@
     }
     .s-title em {
       font-style:normal;
-      background:linear-gradient(90deg,var(--orange-lt),var(--orange));
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      color:var(--orange-lt);
     }
     .s-lead {
       font-size:.95rem; color:var(--muted); line-height:1.75;
@@ -490,7 +487,7 @@
       margin-top:8px;
       background:none; border:none; font-family:var(--font); cursor:pointer;
     }
-    .svc-card:hover .svc-link { gap:14px; }
+    .svc-card:hover .svc-link { opacity:.75; }
 
     /* ============================================================
        POURQUOI — layout 2 cols sticky + bento
@@ -518,7 +515,7 @@
       transition:background .2s,transform .2s;
     }
     @media (hover: hover) and (pointer: fine) {
-      .btn-contact:hover { background:var(--orange-lt); gap:13px; transform:scale(1.03); }
+      .btn-contact:hover { background:var(--orange-lt); transform:scale(1.03); }
     }
     .btn-contact:active { transform:scale(0.97); transition:transform 100ms var(--ease); }
 
@@ -548,10 +545,10 @@
     .bento-card p { font-size:.85rem; color:var(--muted); line-height:1.68; }
 
     /* ============================================================
-       STATS — accent orange plein, DESIGN_VARIANCE:7
+       STATS — manifeste éditorial, DESIGN_VARIANCE:7
     ============================================================ */
     #stats {
-      padding:100px 0;
+      padding:120px 0;
       background:var(--bg-1);
       border-top:1px solid var(--border);
       position:relative; overflow:hidden;
@@ -562,29 +559,31 @@
       position:absolute; top:50%; left:50%;
       transform:translate(-50%,-50%);
       width:700px; height:400px;
-      background:radial-gradient(ellipse,rgba(232,101,10,.09) 0%,transparent 65%);
+      background:radial-gradient(ellipse,rgba(232,101,10,.07) 0%,transparent 65%);
       animation:glow-bob 10s ease-in-out infinite;
       pointer-events:none;
     }
 
-    .stats-inner {
+    .stats-manifesto {
       position:relative; z-index:1;
-      display:grid; grid-template-columns:1fr 1fr;
-      gap:60px 28px; text-align:center;
+      max-width:860px; margin:0 auto;
+      text-align:center;
     }
-
-    .stat-num {
-      font-size:clamp(3.5rem,9vw,6.5rem);
-      font-weight:900; letter-spacing:-.07em; line-height:1;
-      background:linear-gradient(95deg,var(--orange-lt),var(--orange));
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-      background-clip:text;
+    .manifesto-txt {
+      font-size:clamp(1.55rem,3.8vw,2.9rem);
+      font-weight:700; line-height:1.38;
+      letter-spacing:-.03em;
+      color:rgba(254,252,251,.55);
     }
-    .stat-num .u { font-size:.55em; }
-    .stat-lbl {
-      font-size:.72rem; font-weight:600;
-      letter-spacing:.08em; text-transform:uppercase;
-      color:var(--muted); margin-top:8px;
+    .manifesto-txt strong {
+      color:var(--white);
+      font-weight:900;
+    }
+    .manifesto-sig {
+      display:block; margin-top:36px;
+      font-size:.72rem; font-weight:700;
+      letter-spacing:.12em; text-transform:uppercase;
+      color:var(--orange);
     }
 
     /* ============================================================
@@ -1044,23 +1043,14 @@
   <!-- STATS -->
   <section id="stats">
     <div class="s-wrap">
-      <div class="stats-inner reveal">
-        <div>
-          <div class="stat-num" data-target="150">0</div>
-          <div class="stat-lbl">Véhicules traités</div>
-        </div>
-        <div>
-          <div class="stat-num" data-target="10">0</div>
-          <div class="stat-lbl">Ans d'expérience</div>
-        </div>
-        <div>
-          <div class="stat-num" data-target="2">0</div>
-          <div class="stat-lbl">Départements couverts</div>
-        </div>
-        <div>
-          <div class="stat-num">24<span class="u">h</span></div>
-          <div class="stat-lbl">Délai de réponse</div>
-        </div>
+      <div class="stats-manifesto reveal">
+        <p class="manifesto-txt">
+          En <strong>10&nbsp;ans</strong>, nous avons traité plus de
+          <strong>150&nbsp;véhicules</strong> dans
+          <strong>2&nbsp;départements</strong> — avec un seul engagement&nbsp;:
+          vous répondre en <strong>24&nbsp;heures</strong>, sans exception.
+        </p>
+        <span class="manifesto-sig">ALB Auto 73 · Albertville, Savoie</span>
       </div>
     </div>
   </section>
@@ -1229,23 +1219,6 @@
       }, { threshold: 0.08 });
       document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     })();
-
-    /* Compteurs animés */
-    new IntersectionObserver((entries, obs) => {
-      entries.forEach(e => {
-        if (!e.isIntersecting) return;
-        e.target.querySelectorAll('[data-target]').forEach(el => {
-          let v = 0, t = +el.dataset.target;
-          const step = Math.ceil(t / (1100 / 16));
-          const timer = setInterval(() => {
-            v = Math.min(v + step, t);
-            el.textContent = v;
-            if (v >= t) clearInterval(timer);
-          }, 16);
-        });
-        obs.unobserve(e.target);
-      });
-    }, { threshold: 0.4 }).observe(document.querySelector('.stats-inner'));
 
     /* Back to top */
     const btt = document.getElementById('btt');
