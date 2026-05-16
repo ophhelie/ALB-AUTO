@@ -30,8 +30,10 @@
       --border:    rgba(255,255,255,.07);
       --border-hi: rgba(255,255,255,.12);
       --font:      'Inter', system-ui, sans-serif;
-      --ease:      cubic-bezier(.22,1,.36,1);
+      --ease:      cubic-bezier(0.23, 1, 0.32, 1);   /* Emil: strong ease-out */
       --ease-in:   cubic-bezier(.4,0,1,1);
+      --ease-inout:cubic-bezier(0.77, 0, 0.175, 1); /* Emil: strong ease-in-out */
+      --ease-draw: cubic-bezier(0.32, 0.72, 0, 1);  /* Emil: iOS drawer curve */
     }
 
     html { scroll-behavior: smooth; }
@@ -47,25 +49,33 @@
     ul  { list-style: none; }
 
     /* ============================================================
-       ANIMATIONS — MOTION_INTENSITY:5
+       ANIMATIONS — Emil Kowalski principles applied
     ============================================================ */
     @keyframes pulse    { 0%,100%{opacity:1} 50%{opacity:.35} }
-    @keyframes float    { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-18px) scale(1.04)} }
+    @keyframes float    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
     @keyframes marqscrl { from{transform:translateX(0)} to{transform:translateX(-50%)} }
     @keyframes glow-bob { 0%,100%{opacity:.18;transform:translate(-50%,-50%) scale(1)}
-                          50%{opacity:.26;transform:translate(-50%,-50%) scale(1.12)} }
+                          50%{opacity:.26;transform:translate(-50%,-50%) scale(1.1)} }
 
-    /* Staggered reveal */
+    /* Staggered reveal — 60ms stagger (Emil: 30-80ms) */
     .reveal {
       opacity: 0;
-      transform: translateY(28px);
-      transition: opacity .75s var(--ease), transform .75s var(--ease);
+      transform: translateY(16px); /* réduit : 28→16, mouvement plus subtil */
+      transition: opacity .65s var(--ease), transform .65s var(--ease);
     }
     .reveal.in { opacity:1; transform:none; }
-    .reveal[data-d="1"] { transition-delay:.1s; }
-    .reveal[data-d="2"] { transition-delay:.2s; }
-    .reveal[data-d="3"] { transition-delay:.3s; }
-    .reveal[data-d="4"] { transition-delay:.4s; }
+    .reveal[data-d="1"] { transition-delay:.06s; }
+    .reveal[data-d="2"] { transition-delay:.12s; }
+    .reveal[data-d="3"] { transition-delay:.18s; }
+    .reveal[data-d="4"] { transition-delay:.24s; }
+
+    /* prefers-reduced-motion — accessibilité */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { transition: opacity .3s ease; transform: none; }
+      .g1, .g2 { animation: none; }
+      .marquee-track { animation: none; }
+      * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
 
     /* ============================================================
        HEADER
@@ -113,7 +123,10 @@
       border-radius:50px; font-size:.82rem; font-weight:700;
       transition:background .2s,transform .2s; flex-shrink:0;
     }
-    .hdr-cta:hover { background:var(--orange-lt); transform:scale(1.03); }
+    @media (hover: hover) and (pointer: fine) {
+      .hdr-cta:hover { background:var(--orange-lt); transform:scale(1.03); }
+    }
+    .hdr-cta:active { transform:scale(0.97); transition:transform 100ms var(--ease); }
 
     .burger {
       display:none; flex-direction:column; gap:5px;
@@ -304,9 +317,12 @@
       padding:10px 22px; background:var(--white); color:var(--bg);
       border:none; border-radius:50px;
       font-family:var(--font); font-size:.8rem; font-weight:700;
-      cursor:pointer; transition:background .2s,transform .2s,gap .2s;
+      cursor:pointer; transition:background .2s,transform .2s;
     }
-    .btn-go:hover { background:#e5e5e5; transform:scale(1.03); gap:12px; }
+    @media (hover: hover) and (pointer: fine) {
+      .btn-go:hover { background:#e5e5e5; transform:scale(1.03); gap:12px; }
+    }
+    .btn-go:active { transform:scale(0.97); transition:transform 100ms var(--ease); }
 
     /* Panel VENDRE args */
     .sell-badge {
@@ -332,9 +348,12 @@
       padding:10px 20px; background:var(--orange); border:none; border-radius:50px;
       font-family:var(--font); font-size:.8rem; font-weight:700; color:var(--white);
       cursor:pointer; align-self:flex-start;
-      transition:background .2s,gap .2s,transform .2s; position:relative; z-index:1;
+      transition:background .2s,transform .2s; position:relative; z-index:1;
     }
-    .btn-sell:hover { background:var(--orange-lt); gap:12px; transform:scale(1.03); }
+    @media (hover: hover) and (pointer: fine) {
+      .btn-sell:hover { background:var(--orange-lt); gap:12px; transform:scale(1.03); }
+    }
+    .btn-sell:active { transform:scale(0.97); transition:transform 100ms var(--ease); }
 
     /* Trust strip */
     .hero-strip {
@@ -468,7 +487,7 @@
     .svc-link {
       display:inline-flex; align-items:center; gap:8px;
       font-size:.78rem; font-weight:700; color:var(--orange);
-      margin-top:8px; transition:gap .2s;
+      margin-top:8px;
       background:none; border:none; font-family:var(--font); cursor:pointer;
     }
     .svc-card:hover .svc-link { gap:14px; }
@@ -496,9 +515,12 @@
       color:var(--white); border:none; border-radius:50px;
       font-family:var(--font); font-size:.82rem; font-weight:700;
       cursor:pointer; align-self:flex-start;
-      transition:background .2s,transform .2s,gap .2s;
+      transition:background .2s,transform .2s;
     }
-    .btn-contact:hover { background:var(--orange-lt); gap:13px; transform:scale(1.03); }
+    @media (hover: hover) and (pointer: fine) {
+      .btn-contact:hover { background:var(--orange-lt); gap:13px; transform:scale(1.03); }
+    }
+    .btn-contact:active { transform:scale(0.97); transition:transform 100ms var(--ease); }
 
     .bento {
       display:grid; grid-template-columns:1fr; gap:1px;
@@ -638,7 +660,10 @@
       justify-content:center; gap:10px;
       transition:background .2s,transform .2s;
     }
-    .btn-send:hover { background:var(--orange-lt); transform:scale(1.01); }
+    @media (hover: hover) and (pointer: fine) {
+      .btn-send:hover { background:var(--orange-lt); transform:scale(1.01); }
+    }
+    .btn-send:active { transform:scale(0.97); transition:transform 100ms var(--ease); }
 
     .f-legal {
       font-size:.68rem; color:rgba(255,255,255,.2);
