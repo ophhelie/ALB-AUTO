@@ -231,7 +231,7 @@
     .hero-h .w3 {
       display:block;
       font-style:italic;
-      color:rgba(255,255,255,.12);
+      color:rgba(255,255,255,.18);
       letter-spacing:-.07em;
     }
 
@@ -262,7 +262,7 @@
       background:linear-gradient(140deg,rgba(232,101,10,.16),rgba(232,101,10,.06));
       display:flex; flex-direction:column; gap:14px;
       cursor:pointer; position:relative; overflow:hidden;
-      transition:flex .45s var(--ease), background .3s;
+      transition:background .35s var(--ease), box-shadow .35s var(--ease);
       min-width:190px;
     }
     .w-sell::before {
@@ -275,8 +275,8 @@
     }
     .w-sell:hover::before { transform:scale(1.6); }
     .w-sell:hover {
-      flex:0 0 48%;
-      background:linear-gradient(140deg,rgba(232,101,10,.24),rgba(232,101,10,.1));
+      background:linear-gradient(140deg,rgba(232,101,10,.28),rgba(232,101,10,.12));
+      box-shadow:inset 0 0 0 1px rgba(232,101,10,.25);
     }
 
     .w-head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
@@ -486,8 +486,9 @@
       font-size:.78rem; font-weight:700; color:var(--orange);
       margin-top:8px;
       background:none; border:none; font-family:var(--font); cursor:pointer;
+      transition:opacity .2s;
     }
-    .svc-card:hover .svc-link { opacity:.75; }
+    .svc-card:hover .svc-link { opacity:.7; }
 
     /* ============================================================
        POURQUOI — layout 2 cols sticky + bento
@@ -1047,7 +1048,7 @@
         <p class="manifesto-txt">
           En <strong>10&nbsp;ans</strong>, nous avons traité plus de
           <strong>150&nbsp;véhicules</strong> dans
-          <strong>2&nbsp;départements</strong> — avec un seul engagement&nbsp;:
+          <strong>2&nbsp;départements</strong>, avec un seul engagement&nbsp;:
           vous répondre en <strong>24&nbsp;heures</strong>, sans exception.
         </p>
         <span class="manifesto-sig">ALB Auto 73 · Albertville, Savoie</span>
