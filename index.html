@@ -1,1257 +1,1328 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ALB Auto 73 — Achat & Vente de véhicules en Savoie</title>
-  <meta name="description" content="ALB Auto 73, spécialiste achat et vente de véhicules en Savoie. Transparent, local, réactif." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-  <style>
-    /* ============================================================
-       TOKENS
-       DESIGN_VARIANCE:7  MOTION_INTENSITY:5  VISUAL_DENSITY:3
-    ============================================================ */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:        #060504;
-      --bg-1:      #0c0a08;
-      --bg-2:      #131210;
-      --bg-3:      #1c1a17;
-      --orange:    #e8650a;
-      --orange-lt: #ff7a20;
-      --white:     #fefcfb;
-      --muted:     rgba(255,255,255,.45);
-      --muted-hi:  rgba(255,255,255,.7);
-      --border:    rgba(255,255,255,.07);
-      --border-hi: rgba(255,255,255,.12);
-      --font:      'Inter', system-ui, sans-serif;
-      --ease:      cubic-bezier(0.23, 1, 0.32, 1);   /* Emil: strong ease-out */
-      --ease-in:   cubic-bezier(.4,0,1,1);
-      --ease-inout:cubic-bezier(0.77, 0, 0.175, 1); /* Emil: strong ease-in-out */
-      --ease-draw: cubic-bezier(0.32, 0.72, 0, 1);  /* Emil: iOS drawer curve */
-    }
-
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--white);
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-    img { max-width: 100%; display: block; }
-    a   { color: inherit; text-decoration: none; }
-    ul  { list-style: none; }
-
-    /* ============================================================
-       ANIMATIONS — Emil Kowalski principles applied
-    ============================================================ */
-    @keyframes pulse    { 0%,100%{opacity:1} 50%{opacity:.35} }
-    @keyframes float    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
-    @keyframes marqscrl { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-    @keyframes glow-bob { 0%,100%{opacity:.18;transform:translate(-50%,-50%) scale(1)}
-                          50%{opacity:.26;transform:translate(-50%,-50%) scale(1.1)} }
-
-    /* Staggered reveal — 60ms stagger (Emil: 30-80ms) */
-    .reveal {
-      opacity: 0;
-      transform: translateY(16px); /* réduit : 28→16, mouvement plus subtil */
-      transition: opacity .65s var(--ease), transform .65s var(--ease);
-    }
-    .reveal.in { opacity:1; transform:none; }
-    .reveal[data-d="1"] { transition-delay:.06s; }
-    .reveal[data-d="2"] { transition-delay:.12s; }
-    .reveal[data-d="3"] { transition-delay:.18s; }
-    .reveal[data-d="4"] { transition-delay:.24s; }
-
-    /* prefers-reduced-motion — accessibilité */
-    @media (prefers-reduced-motion: reduce) {
-      .reveal { transition: opacity .3s ease; transform: none; }
-      .g1, .g2 { animation: none; }
-      .marquee-track { animation: none; }
-      * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
-    }
-
-    /* ============================================================
-       HEADER
-    ============================================================ */
-    #hdr {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 900;
-      height: 62px;
-      display: flex;
-      align-items: center;
-      background: rgba(0,0,0,.8);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .hdr-inner {
-      width: 100%; max-width: 1360px;
-      margin: 0 auto; padding: 0 28px;
-      display: flex; align-items: center; gap: 40px;
-    }
-
-    .logo { display:flex; align-items:center; flex-shrink:0; }
-    .logo img { height:34px; }
-    .logo-txt {
-      display:flex; align-items:baseline; gap:3px;
-      font-size:1.2rem; font-weight:900; letter-spacing:-.04em;
-    }
-    .logo-txt .a { color:var(--white); }
-    .logo-txt .b { color:var(--orange); }
-    .logo-txt .c { font-size:.65rem; font-weight:600; color:var(--muted); margin-left:2px; }
-
-    .hdr-nav { flex:1; display:flex; justify-content:center; gap:36px; }
-    .hdr-nav a {
-      font-size:.82rem; font-weight:500; color:var(--muted);
-      transition:color .2s;
-    }
-    .hdr-nav a:hover { color:var(--white); }
-
-    .hdr-cta {
-      display:inline-flex; align-items:center; gap:7px;
-      padding:9px 22px;
-      background:var(--orange); color:var(--white);
-      border-radius:50px; font-size:.82rem; font-weight:700;
-      transition:background .2s,transform .2s; flex-shrink:0;
-    }
-    @media (hover: hover) and (pointer: fine) {
-      .hdr-cta:hover { background:var(--orange-lt); transform:scale(1.03); }
-    }
-    .hdr-cta:active { transform:scale(0.97); transition:transform 100ms var(--ease); }
-
-    .burger {
-      display:none; flex-direction:column; gap:5px;
-      padding:6px; background:none; border:none;
-      cursor:pointer; margin-left:auto;
-    }
-    .burger span {
-      display:block; width:22px; height:2px;
-      background:var(--white); border-radius:2px;
-      transition:transform .25s, opacity .25s;
-    }
-    .burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-    .burger.open span:nth-child(2){opacity:0}
-    .burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-
-    .mob-nav {
-      display:none; position:fixed;
-      top:62px; left:0; right:0; bottom:0;
-      background:var(--bg); z-index:899;
-      flex-direction:column; padding:36px 28px; gap:4px;
-    }
-    .mob-nav.open { display:flex; }
-    .mob-nav a {
-      font-size:1.3rem; font-weight:700;
-      color:var(--white); padding:16px 0;
-      border-bottom:1px solid var(--border);
-    }
-    .mob-nav .hdr-cta { margin-top:24px; justify-content:center; background:var(--orange); }
-
-    /* ============================================================
-       HERO — VISUAL_DENSITY:3 → spacieux, centré, un seul focus
-    ============================================================ */
-    #hero {
-      position:relative; min-height:100svh;
-      display:flex; flex-direction:column;
-      justify-content:center; padding-top:62px;
-      overflow:hidden; background:var(--bg);
-    }
-
-    /* Glows animés */
-    .g1 {
-      position:absolute; top:50%; left:50%;
-      width:900px; height:700px;
-      background:radial-gradient(ellipse,rgba(232,101,10,.16) 0%,transparent 65%);
-      border-radius:50%;
-      animation:glow-bob 8s ease-in-out infinite;
-      pointer-events:none;
-    }
-    .g2 {
-      position:absolute; bottom:-15%; right:-10%;
-      width:500px; height:500px;
-      background:radial-gradient(circle,rgba(232,101,10,.07) 0%,transparent 65%);
-      animation:float 12s ease-in-out infinite;
-      pointer-events:none;
-    }
-
-    /* Grille fine décorative */
-    #hero::before {
-      content:'';
-      position:absolute; inset:0;
-      background-image:
-        linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
-      background-size:80px 80px;
-      pointer-events:none;
-    }
-
-    .hero-body {
-      position:relative; z-index:1;
-      max-width:1360px; margin:0 auto;
-      padding:90px 28px 100px;
-      display:flex; flex-direction:column;
-      align-items:center; text-align:center; gap:0;
-    }
-
-    .hero-chip {
-      display:inline-flex; align-items:center; gap:8px;
-      padding:5px 16px;
-      border:1px solid var(--border-hi); border-radius:50px;
-      font-size:.72rem; font-weight:600;
-      color:var(--muted); letter-spacing:.05em;
-      margin-bottom:40px;
-    }
-    .hero-chip .dot {
-      width:6px; height:6px; border-radius:50%;
-      background:var(--orange); flex-shrink:0;
-      animation:pulse 2.2s ease infinite;
-    }
-
-    /* Titre editorial DESIGN_VARIANCE:7 */
-    .hero-h {
-      font-size:clamp(3.2rem,10vw,9rem);
-      font-weight:900; line-height:.9;
-      letter-spacing:-.06em;
-      margin-bottom:24px;
-    }
-    .hero-h .w1 { display:block; color:var(--white); }
-    .hero-h .w2 {
-      display:block;
-      color:var(--orange-lt);
-    }
-    .hero-h .w3 {
-      display:block;
-      font-style:italic;
-      color:rgba(255,255,255,.18);
-      letter-spacing:-.07em;
-    }
-
-    .hero-sub {
-      font-size:clamp(.9rem,1.6vw,1.1rem);
-      color:var(--muted); line-height:1.75;
-      max-width:460px; margin-bottom:52px;
-    }
-
-    /* ---- Widget ACHETER / VENDRE ---- */
-    .widget {
-      width:100%; max-width:880px;
-      display:flex; border-radius:18px; overflow:hidden;
-      border:1px solid var(--border-hi);
-      background:rgba(255,255,255,.03);
-      backdrop-filter:blur(16px);
-      -webkit-backdrop-filter:blur(16px);
-      box-shadow:0 0 0 1px rgba(255,255,255,.04),0 40px 100px rgba(0,0,0,.7);
-    }
-
-    .w-buy {
-      flex:1 1 60%; padding:30px 28px 26px;
-      display:flex; flex-direction:column; gap:18px;
-      border-right:1px solid var(--border); min-width:0;
-    }
-    .w-sell {
-      flex:0 0 40%; padding:30px 26px 26px;
-      background:linear-gradient(140deg,rgba(232,101,10,.16),rgba(232,101,10,.06));
-      display:flex; flex-direction:column; gap:14px;
-      cursor:pointer; position:relative; overflow:hidden;
-      transition:background .35s var(--ease), box-shadow .35s var(--ease);
-      min-width:190px;
-    }
-    .w-sell::before {
-      content:''; position:absolute;
-      top:-50px; right:-50px;
-      width:200px; height:200px; border-radius:50%;
-      background:rgba(255,255,255,.04);
-      transition:transform .5s var(--ease);
-      pointer-events:none;
-    }
-    .w-sell:hover::before { transform:scale(1.6); }
-    .w-sell:hover {
-      background:linear-gradient(140deg,rgba(232,101,10,.28),rgba(232,101,10,.12));
-      box-shadow:inset 0 0 0 1px rgba(232,101,10,.25);
-    }
-
-    .w-head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
-    .w-label { font-size:clamp(.9rem,1.8vw,1.2rem); font-weight:800; letter-spacing:-.03em; line-height:1.15; }
-    .w-kpi { text-align:right; flex-shrink:0; }
-    .w-kpi strong {
-      display:block; font-size:clamp(1.5rem,2.8vw,2.2rem);
-      font-weight:900; letter-spacing:-.05em;
-      color:var(--orange); line-height:1;
-    }
-    .w-kpi span { font-size:.65rem; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
-
-    .w-fields { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-    .w-fields select {
-      width:100%; padding:10px 13px;
-      background:rgba(255,255,255,.04); border:1px solid var(--border-hi);
-      border-radius:9px; color:var(--white);
-      font-family:var(--font); font-size:.78rem; font-weight:500;
-      outline:none; appearance:none; -webkit-appearance:none; cursor:pointer;
-      transition:border-color .2s,background .2s;
-    }
-    .w-fields select:hover  { border-color:rgba(255,255,255,.22); background:rgba(255,255,255,.07); }
-    .w-fields select:focus  { border-color:var(--orange); }
-    .w-fields option { background:#1a1a1a; }
-
-    .w-foot { display:flex; align-items:center; justify-content:space-between; gap:10px; }
-    .w-more {
-      font-size:.72rem; font-weight:600; color:var(--muted);
-      background:none; border:none; font-family:var(--font); cursor:pointer;
-      transition:color .2s;
-    }
-    .w-more:hover { color:var(--white); }
-
-    .btn-go {
-      display:inline-flex; align-items:center; gap:8px;
-      padding:10px 22px; background:var(--white); color:var(--bg);
-      border:none; border-radius:50px;
-      font-family:var(--font); font-size:.8rem; font-weight:700;
-      cursor:pointer; transition:background .2s,transform .2s;
-    }
-    @media (hover: hover) and (pointer: fine) {
-      .btn-go:hover { background:#e5e5e5; transform:scale(1.03); }
-    }
-    .btn-go:active { transform:scale(0.97); transition:transform 100ms var(--ease); }
-
-    /* Panel VENDRE args */
-    .sell-badge {
-      display:inline-flex; align-items:center; gap:6px;
-      padding:3px 12px; border:1px solid rgba(232,101,10,.4);
-      border-radius:50px; font-size:.65rem; font-weight:700;
-      letter-spacing:.07em; text-transform:uppercase;
-      color:var(--orange-lt); align-self:flex-start;
-    }
-    .sell-args {
-      display:flex; flex-direction:column; gap:8px;
-      max-height:0; overflow:hidden; opacity:0;
-      transition:max-height .45s var(--ease),opacity .35s ease .06s;
-    }
-    .w-sell:hover .sell-args { max-height:200px; opacity:1; }
-    .sell-arg {
-      display:flex; align-items:center; gap:9px;
-      font-size:.78rem; font-weight:500; color:rgba(255,255,255,.82);
-    }
-    .sell-arg i { color:var(--orange-lt); font-size:.68rem; flex-shrink:0; }
-    .btn-sell {
-      margin-top:auto; display:inline-flex; align-items:center; gap:8px;
-      padding:10px 20px; background:var(--orange); border:none; border-radius:50px;
-      font-family:var(--font); font-size:.8rem; font-weight:700; color:var(--white);
-      cursor:pointer; align-self:flex-start;
-      transition:background .2s,transform .2s; position:relative; z-index:1;
-    }
-    @media (hover: hover) and (pointer: fine) {
-      .btn-sell:hover { background:var(--orange-lt); transform:scale(1.03); }
-    }
-    .btn-sell:active { transform:scale(0.97); transition:transform 100ms var(--ease); }
-
-    /* Trust strip */
-    .hero-strip {
-      display:flex; flex-wrap:wrap;
-      justify-content:center; gap:28px;
-      margin-top:32px;
-    }
-    .hs-item {
-      display:flex; align-items:center; gap:7px;
-      font-size:.72rem; font-weight:500; color:var(--muted);
-    }
-    .hs-item i { color:var(--orange); font-size:.68rem; }
-
-    /* ============================================================
-       MARQUEE — MOTION_INTENSITY:5
-    ============================================================ */
-    .marquee-wrap {
-      width:100%; overflow:hidden;
-      border-top:1px solid var(--border);
-      border-bottom:1px solid var(--border);
-      padding:18px 0;
-      background:var(--bg-1);
-    }
-    .marquee-track {
-      display:flex; gap:0;
-      width:max-content;
-      animation:marqscrl 28s linear infinite;
-    }
-    .marquee-track:hover { animation-play-state:paused; }
-    .marquee-item {
-      display:flex; align-items:center; gap:10px;
-      padding:0 40px;
-      font-size:.78rem; font-weight:600;
-      color:var(--muted); white-space:nowrap;
-      letter-spacing:.04em; text-transform:uppercase;
-      border-right:1px solid var(--border);
-    }
-    .marquee-item i { color:var(--orange); font-size:.8rem; }
-
-    /* ============================================================
-       SECTION COMMUNE — VISUAL_DENSITY:3
-    ============================================================ */
-    .s-wrap {
-      max-width:1360px; margin:0 auto; padding:0 28px;
-    }
-
-    .eyebrow {
-      display:inline-flex; align-items:center; gap:10px;
-      font-size:.68rem; font-weight:700;
-      letter-spacing:.12em; text-transform:uppercase;
-      color:var(--orange); margin-bottom:18px;
-    }
-    .eyebrow::before { content:''; width:22px; height:1px; background:var(--orange); }
-
-    .s-title {
-      font-size:clamp(2.2rem,5vw,4.2rem);
-      font-weight:900; letter-spacing:-.05em; line-height:.92;
-    }
-    .s-title em {
-      font-style:normal;
-      color:var(--orange-lt);
-    }
-    .s-lead {
-      font-size:.95rem; color:var(--muted); line-height:1.75;
-      max-width:440px; margin-top:16px;
-    }
-
-    /* ============================================================
-       SERVICES — 3 colonnes, grand espace
-    ============================================================ */
-    #services {
-      padding:130px 0;
-      background:var(--bg-1);
-      border-top:1px solid var(--border);
-    }
-
-    .svc-head { margin-bottom:72px; }
-
-    .svc-grid {
-      display:grid; grid-template-columns:1fr; gap:1px;
-      background:var(--border);
-      border:1px solid var(--border);
-      border-radius:18px; overflow:hidden;
-    }
-
-    .svc-card {
-      background:var(--bg-1);
-      padding:48px 44px;
-      display:flex; flex-direction:column; gap:16px;
-      position:relative; overflow:hidden;
-      transition:background .3s;
-    }
-    .svc-card::before {
-      content:'';
-      position:absolute; inset:0;
-      background:radial-gradient(circle at 0% 0%,rgba(232,101,10,.06) 0%,transparent 55%);
-      opacity:0; transition:opacity .4s;
-      pointer-events:none;
-    }
-    .svc-card:hover { background:var(--bg-2); }
-    .svc-card:hover::before { opacity:1; }
-
-    /* Numéro décoratif DESIGN_VARIANCE:7 */
-    .svc-n {
-      font-size:5rem; font-weight:900; line-height:1;
-      letter-spacing:-.06em;
-      color:rgba(232,101,10,.08);
-      position:absolute; top:24px; right:32px;
-      pointer-events:none; user-select:none;
-    }
-
-    .svc-tag {
-      font-size:.65rem; font-weight:700;
-      letter-spacing:.1em; text-transform:uppercase;
-      color:var(--orange);
-    }
-    .svc-card h3 {
-      font-size:clamp(1.3rem,2.5vw,1.75rem);
-      font-weight:800; letter-spacing:-.04em;
-    }
-    .svc-card p {
-      font-size:.9rem; color:var(--muted); line-height:1.75; max-width:400px;
-    }
-    .svc-list { display:flex; flex-direction:column; gap:9px; margin-top:4px; }
-    .svc-list li {
-      display:flex; align-items:center; gap:10px;
-      font-size:.82rem; color:rgba(255,255,255,.55);
-    }
-    .svc-list li i { color:var(--orange); font-size:.68rem; flex-shrink:0; }
-    .svc-link {
-      display:inline-flex; align-items:center; gap:8px;
-      font-size:.78rem; font-weight:700; color:var(--orange);
-      margin-top:8px;
-      background:none; border:none; font-family:var(--font); cursor:pointer;
-      transition:opacity .2s;
-    }
-    .svc-card:hover .svc-link { opacity:.7; }
-
-    /* ============================================================
-       POURQUOI — layout 2 cols sticky + bento
-    ============================================================ */
-    #pourquoi {
-      padding:130px 0;
-      background:var(--bg);
-      border-top:1px solid var(--border);
-    }
-
-    .pq-layout {
-      display:grid; grid-template-columns:1fr;
-      gap:72px;
-    }
-
-    .pq-left { display:flex; flex-direction:column; gap:28px; }
-    .pq-left .s-lead { max-width:360px; }
-
-    .btn-contact {
-      display:inline-flex; align-items:center; gap:9px;
-      padding:12px 24px; background:var(--orange);
-      color:var(--white); border:none; border-radius:50px;
-      font-family:var(--font); font-size:.82rem; font-weight:700;
-      cursor:pointer; align-self:flex-start;
-      transition:background .2s,transform .2s;
-    }
-    @media (hover: hover) and (pointer: fine) {
-      .btn-contact:hover { background:var(--orange-lt); transform:scale(1.03); }
-    }
-    .btn-contact:active { transform:scale(0.97); transition:transform 100ms var(--ease); }
-
-    .bento {
-      display:grid; grid-template-columns:1fr; gap:1px;
-      background:var(--border);
-      border:1px solid var(--border); border-radius:18px; overflow:hidden;
-    }
-
-    .bento-card {
-      background:var(--bg-2); padding:36px 32px;
-      display:flex; flex-direction:column; gap:12px;
-      position:relative; overflow:hidden;
-      transition:background .3s, border-color .3s;
-    }
-    .bento-card:hover { background:var(--bg-3); }
-
-    /* Numéro filigrane */
-    .bn-num {
-      font-size:4.5rem; font-weight:900; line-height:1;
-      letter-spacing:-.07em;
-      color:rgba(232,101,10,.12);
-    }
-    .bento-card h3 {
-      font-size:1.05rem; font-weight:800; letter-spacing:-.02em;
-    }
-    .bento-card p { font-size:.85rem; color:var(--muted); line-height:1.68; }
-
-    /* ============================================================
-       STATS — manifeste éditorial, DESIGN_VARIANCE:7
-    ============================================================ */
-    #stats {
-      padding:120px 0;
-      background:var(--bg-1);
-      border-top:1px solid var(--border);
-      position:relative; overflow:hidden;
-    }
-
-    #stats::before {
-      content:'';
-      position:absolute; top:50%; left:50%;
-      transform:translate(-50%,-50%);
-      width:700px; height:400px;
-      background:radial-gradient(ellipse,rgba(232,101,10,.07) 0%,transparent 65%);
-      animation:glow-bob 10s ease-in-out infinite;
-      pointer-events:none;
-    }
-
-    .stats-manifesto {
-      position:relative; z-index:1;
-      max-width:860px; margin:0 auto;
-      text-align:center;
-    }
-    .manifesto-txt {
-      font-size:clamp(1.55rem,3.8vw,2.9rem);
-      font-weight:700; line-height:1.38;
-      letter-spacing:-.03em;
-      color:rgba(254,252,251,.55);
-    }
-    .manifesto-txt strong {
-      color:var(--white);
-      font-weight:900;
-    }
-    .manifesto-sig {
-      display:block; margin-top:36px;
-      font-size:.72rem; font-weight:700;
-      letter-spacing:.12em; text-transform:uppercase;
-      color:var(--orange);
-    }
-
-    /* ============================================================
-       CONTACT
-    ============================================================ */
-    #contact {
-      padding:130px 0;
-      background:var(--bg);
-      border-top:1px solid var(--border);
-    }
-
-    .ct-grid { display:grid; grid-template-columns:1fr; gap:72px; }
-
-    .ct-left { display:flex; flex-direction:column; gap:40px; }
-    .ct-left .s-lead { max-width:380px; }
-
-    .ct-info { display:flex; flex-direction:column; gap:18px; }
-    .ct-row { display:flex; align-items:flex-start; gap:14px; }
-    .ct-ico {
-      width:38px; height:38px; border-radius:9px;
-      background:var(--bg-3); border:1px solid var(--border-hi);
-      display:flex; align-items:center; justify-content:center; flex-shrink:0;
-    }
-    .ct-ico i { color:var(--orange); font-size:.85rem; }
-    .ct-txt strong { display:block; font-size:.86rem; font-weight:700; }
-    .ct-txt span   { font-size:.78rem; color:var(--muted); }
-
-    .ct-form {
-      background:var(--bg-2); border:1px solid var(--border-hi);
-      border-radius:20px; padding:44px 36px;
-      position:relative; overflow:hidden;
-    }
-    .ct-form::after {
-      content:''; position:absolute; top:-80px; right:-80px;
-      width:260px; height:260px; border-radius:50%;
-      background:radial-gradient(circle,rgba(232,101,10,.07) 0%,transparent 70%);
-      pointer-events:none;
-    }
-
-    .ct-form-title {
-      font-size:1.4rem; font-weight:800; letter-spacing:-.04em; margin-bottom:32px;
-    }
-
-    .f-grid { display:grid; grid-template-columns:1fr; gap:16px; }
-    .f-group { display:flex; flex-direction:column; gap:7px; }
-    .f-group label {
-      font-size:.68rem; font-weight:700;
-      letter-spacing:.09em; text-transform:uppercase; color:var(--muted);
-    }
-    .f-group input, .f-group select, .f-group textarea {
-      width:100%; padding:13px 16px;
-      background:rgba(255,255,255,.04); border:1px solid var(--border-hi);
-      border-radius:10px; color:var(--white);
-      font-family:var(--font); font-size:.88rem;
-      outline:none; transition:border-color .2s,background .2s; appearance:none;
-    }
-    .f-group input::placeholder, .f-group textarea::placeholder { color:rgba(255,255,255,.2); }
-    .f-group input:focus, .f-group select:focus, .f-group textarea:focus {
-      border-color:var(--orange); background:rgba(232,101,10,.04);
-    }
-    .f-group input.err, .f-group select.err, .f-group textarea.err { border-color:#f04040; }
-    .f-group option { background:#1a1a1a; }
-    .f-group textarea { resize:vertical; min-height:110px; }
-    .f-group.span2 { grid-column:1/-1; }
-    .f-err { font-size:.7rem; color:#ff5555; display:none; }
-    .f-err.on { display:block; }
-
-    .btn-send {
-      width:100%; margin-top:8px; padding:15px;
-      background:var(--orange); color:var(--white); border:none; border-radius:50px;
-      font-family:var(--font); font-size:.9rem; font-weight:700;
-      cursor:pointer; display:flex; align-items:center;
-      justify-content:center; gap:10px;
-      transition:background .2s,transform .2s;
-    }
-    @media (hover: hover) and (pointer: fine) {
-      .btn-send:hover { background:var(--orange-lt); transform:scale(1.01); }
-    }
-    .btn-send:active { transform:scale(0.97); transition:transform 100ms var(--ease); }
-
-    .f-legal {
-      font-size:.68rem; color:rgba(255,255,255,.2);
-      line-height:1.5; margin-top:10px; text-align:center;
-    }
-
-    .f-ok { display:none; flex-direction:column; align-items:center;
-            text-align:center; gap:14px; padding:40px; }
-    .f-ok.on { display:flex; }
-    .f-ok i { font-size:3rem; color:var(--orange); }
-    .f-ok h3 { font-size:1.4rem; font-weight:800; letter-spacing:-.04em; }
-    .f-ok p  { font-size:.88rem; color:var(--muted); }
-
-    /* ============================================================
-       FOOTER
-    ============================================================ */
-    #footer {
-      background:var(--bg-1); border-top:1px solid var(--border);
-      padding:72px 0 32px;
-    }
-
-    .ft-grid {
-      display:grid; grid-template-columns:1fr; gap:44px;
-      padding-bottom:44px; border-bottom:1px solid var(--border);
-    }
-
-    .ft-brand p {
-      font-size:.82rem; color:var(--muted); line-height:1.7;
-      margin-top:14px; max-width:260px;
-    }
-
-    .socials { display:flex; gap:10px; margin-top:20px; }
-    .socials a {
-      width:36px; height:36px; border-radius:9px;
-      background:var(--bg-3); border:1px solid var(--border-hi);
-      display:flex; align-items:center; justify-content:center;
-      color:var(--muted); font-size:.82rem;
-      transition:background .2s,color .2s,border-color .2s;
-    }
-    .socials a:hover { background:var(--orange); border-color:var(--orange); color:var(--white); }
-
-    .ft-col h5 {
-      font-size:.65rem; font-weight:700; letter-spacing:.1em;
-      text-transform:uppercase; color:var(--white); margin-bottom:18px;
-    }
-    .ft-col ul { display:flex; flex-direction:column; gap:12px; }
-    .ft-col ul a { font-size:.82rem; color:var(--muted); transition:color .2s; }
-    .ft-col ul a:hover { color:var(--orange); }
-
-    .ft-bottom {
-      display:flex; flex-direction:column; gap:6px;
-      margin-top:28px; font-size:.72rem;
-      color:rgba(255,255,255,.22); text-align:center;
-    }
-    .ft-bottom a { color:rgba(255,255,255,.28); transition:color .2s; }
-    .ft-bottom a:hover { color:var(--orange); }
-
-    /* ============================================================
-       BACK TO TOP
-    ============================================================ */
-    #btt {
-      position:fixed; bottom:24px; right:20px;
-      width:42px; height:42px; border-radius:9px;
-      background:var(--bg-3); border:1px solid var(--border-hi);
-      color:var(--white); display:flex; align-items:center;
-      justify-content:center; font-size:.85rem;
-      cursor:pointer; opacity:0; pointer-events:none;
-      transform:translateY(10px);
-      transition:opacity .3s,transform .3s,background .2s; z-index:800;
-    }
-    #btt.on { opacity:1; pointer-events:auto; transform:none; }
-    #btt:hover { background:var(--orange); border-color:var(--orange); }
-
-    /* ============================================================
-       RESPONSIVE 768px
-    ============================================================ */
-    @media(min-width:768px){
-      .w-fields        { grid-template-columns:1fr 1fr; }
-      .svc-grid        { grid-template-columns:repeat(3,1fr); }
-      .bento           { grid-template-columns:1fr 1fr; }
-      .stats-inner     { grid-template-columns:repeat(4,1fr); gap:24px; }
-      .f-grid          { grid-template-columns:1fr 1fr; }
-      .ft-grid         { grid-template-columns:1.8fr 1fr 1fr; }
-      .ft-bottom       { flex-direction:row; justify-content:space-between; text-align:left; }
-    }
-
-    /* ============================================================
-       RESPONSIVE 1024px
-    ============================================================ */
-    @media(min-width:1024px){
-      .pq-layout       { grid-template-columns:320px 1fr; gap:96px; align-items:start; }
-      .pq-left         { position:sticky; top:82px; }
-      .ct-grid         { grid-template-columns:340px 1fr; gap:88px; align-items:start; }
-      .ct-left         { position:sticky; top:82px; }
-    }
-
-    /* Mobile */
-    @media(max-width:767px){
-      .hdr-nav         { display:none; }
-      .hdr-cta.d       { display:none; }
-      .burger          { display:flex; }
-      .widget          { flex-direction:column; }
-      .w-sell          { flex:none; min-width:0; }
-      .w-sell:hover    { flex:none; }
-      .sell-args       { max-height:200px; opacity:1; }
-      .w-fields        { grid-template-columns:1fr; }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ALB Auto — Mandat de vente automobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Inter:wght@400;500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================
+     TOKENS — Palette "Midnight Blue & Leather"
+     ============================================ */
+  :root {
+    --bg-primary: #1A1D36;
+    --bg-secondary: #21253D;
+    --bg-darker: #14172B;
+    --surface: #292D4D;
+    --border: rgba(255, 255, 255, 0.06);
+    --border-strong: rgba(255, 255, 255, 0.12);
+    --text-primary: #F5F3EE;
+    --text-secondary: #9A9690;
+    --metal: #C8B79A;
+    --metal-deep: #8A7B65;
+    --metal-gradient: linear-gradient(135deg, #C8B79A 0%, #8A7B65 100%);
+    --placeholder: rgba(245, 243, 238, 0.04);
+    --placeholder-stroke: rgba(245, 243, 238, 0.08);
+    --to-provide: rgba(255, 224, 130, 0.95);
+
+    --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+    --container: 1280px;
+    --gutter: 24px;
+    --section-y: 160px;
+  }
+
+  /* ============================================
+     RESET
+     ============================================ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.55;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  img, svg { display: block; max-width: 100%; }
+
+  /* ============================================
+     TYPOGRAPHIE
+     ============================================ */
+  .display {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+    color: var(--text-primary);
+  }
+  .h1 { font-size: clamp(44px, 5.6vw, 80px); }
+  .h2 { font-size: clamp(40px, 5.5vw, 80px); }
+  .h3 { font-size: 24px; font-family: 'Inter Tight', sans-serif; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+  .overline {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--metal);
+    font-weight: 500;
+  }
+  .body-lead {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.45;
+    letter-spacing: -0.005em;
+    color: var(--text-primary);
+    max-width: 56ch;
+  }
+  .body-lead .accent {
+    color: var(--metal);
+    font-weight: 600;
+  }
+  .body { font-size: 16px; color: var(--text-secondary); }
+  .meta { font-size: 13px; color: var(--text-secondary); letter-spacing: 0.02em; }
+
+  /* ============================================
+     LAYOUT
+     ============================================ */
+  .container { width: 100%; max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); }
+  section { padding: var(--section-y) 0; position: relative; }
+  .section-alt { background: var(--bg-secondary); }
+
+  /* ============================================
+     BOUTONS / CTA
+     ============================================ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 28px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: background 350ms var(--ease-soft), transform 350ms var(--ease-soft), box-shadow 350ms var(--ease-soft);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: var(--metal);
+    color: #1A1814;
+  }
+  .btn-primary:hover {
+    background: #d4c4a8;
+    transform: scale(1.02);
+    box-shadow: 0 18px 48px -16px rgba(200, 183, 154, 0.35);
+  }
+  .btn-ghost {
+    border: 1px solid var(--metal);
+    color: var(--text-primary);
+    background: transparent;
+  }
+  .btn-ghost:hover {
+    background: rgba(200, 183, 154, 0.08);
+    color: var(--metal);
+  }
+  .btn-lg { padding: 24px 48px; font-size: 18px; }
+
+  /* ============================================
+     NAVIGATION
+     ============================================ */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 72px;
+    background: rgba(26, 29, 54, 0.7);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    height: 40px;
+  }
+  .logo img {
+    height: 100%;
+    width: auto;
+    display: block;
+  }
+  .footer-logo { height: 28px; }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--text-primary);
+    transition: color 250ms var(--ease-soft);
+    position: relative;
+    padding: 6px 2px;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    bottom: 0;
+    height: 1.5px;
+    background: var(--metal);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms var(--ease-soft);
+  }
+  .nav-links a:hover { color: var(--metal); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-cta { display: flex; gap: 12px; align-items: center; }
+  .nav-cta .btn { padding: 10px 18px; font-size: 14px; }
+
+  /* ============================================
+     HERO
+     ============================================ */
+  .hero {
+    min-height: 100vh;
+    padding-top: 160px;
+    padding-bottom: 120px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background-color: #0A0B12;
+    background-image: url('header-fond.jpg');
+    background-size: cover;
+    background-position: center right;
+    background-repeat: no-repeat;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(10, 11, 18, 0.92) 0%,
+      rgba(10, 11, 18, 0.78) 25%,
+      rgba(10, 11, 18, 0.45) 48%,
+      rgba(10, 11, 18, 0.15) 65%,
+      transparent 78%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10, 11, 18, 0.55) 0%, transparent 18%, transparent 75%, rgba(10, 11, 18, 0.35) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero > .container { position: relative; z-index: 1; }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+  }
+  .hero-content { max-width: 640px; }
+  .hero-content > * + * { margin-top: 28px; }
+  .hero-h1 .underlined {
+    position: relative;
+    display: inline-block;
+  }
+  .hero-h1 .underlined::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0.05em;
+    height: 2px;
+    width: 100%;
+    background: var(--metal);
+    transform-origin: left;
+    animation: draw 800ms var(--ease-soft) 400ms both;
+  }
+  @keyframes draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+  .hero-reassurance {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    letter-spacing: -0.005em;
+  }
+  .hero-reassurance span {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-reassurance span::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C8B79A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  /* ============================================
+     BANDEAU CONFIANCE
+     ============================================ */
+  .trust {
+    background: var(--bg-secondary);
+    padding: 120px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .trust::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(200, 183, 154, 0.06), transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(200, 183, 154, 0.04), transparent 50%);
+    pointer-events: none;
+  }
+  .trust-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: stretch;
+    gap: 0;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+  .trust-item {
+    text-align: left;
+    padding: 0 40px;
+    border-right: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+  }
+  .trust-item:first-child { padding-left: 0; }
+  .trust-item:last-child { border-right: none; padding-right: 0; }
+  .trust-number {
+    font-family: 'Inter Tight', 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: clamp(56px, 6.8vw, 104px);
+    line-height: 0.9;
+    letter-spacing: -0.045em;
+    color: var(--text-primary);
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .trust-number .unit {
+    font-size: 0.42em;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--metal);
+    margin-left: 4px;
+  }
+  .trust-label {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .trust-counter {
+    display: inline-block;
+    min-width: 0;
+  }
+  @media (max-width: 900px) {
+    .trust { padding: 64px 0; }
+    .trust-inner { grid-template-columns: 1fr 1fr; gap: 48px 0; }
+    .trust-item { padding: 24px !important; border-right: none; }
+    .trust-item:nth-child(odd) { border-right: 1px solid var(--border); }
+    .trust-number { font-size: 56px; }
+  }
+
+  /* ============================================
+     POURQUOI ALB
+     ============================================ */
+  .section-head { margin-bottom: 96px; max-width: 720px; }
+  .section-head .overline { margin-bottom: 20px; display: inline-block; }
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .why-item {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    padding: 36px 32px;
+    border-radius: 24px;
+    background: linear-gradient(155deg, #2A2E50 0%, #1A1D36 55%, #14172B 100%);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    isolation: isolate;
+  }
+  .why-item::before {
+    content: '';
+    position: absolute;
+    width: 130%;
+    height: 110%;
+    bottom: -30%;
+    right: -30%;
+    background: radial-gradient(ellipse, rgba(200, 183, 154, 0.22) 0%, rgba(200, 183, 154, 0.07) 32%, transparent 65%);
+    filter: blur(45px);
+    z-index: 0;
+    animation: haloDrift 16s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+  .why-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .why-item:nth-child(2)::before { animation-delay: -4s; }
+  .why-item:nth-child(3)::before { animation-delay: -8s; }
+  .why-item:nth-child(4)::before { animation-delay: -12s; }
+
+  @keyframes haloDrift {
+    0%, 100% { transform: translate(0%, 0%) scale(1); opacity: 0.85; }
+    25%      { transform: translate(-22%, -18%) scale(1.15); opacity: 0.6; }
+    50%      { transform: translate(-38%, -5%) scale(0.95); opacity: 0.95; }
+    75%      { transform: translate(-12%, -28%) scale(1.1); opacity: 0.7; }
+  }
+
+  .why-item h3 {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-size: clamp(22px, 1.8vw, 28px);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .why-item p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    max-width: 30ch;
+    position: relative;
+    z-index: 1;
+  }
+  .why-visual {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+  .why-icon {
+    width: 96px;
+    height: 96px;
+    color: var(--metal);
+    opacity: 0.82;
+    filter: drop-shadow(0 12px 24px rgba(200, 183, 154, 0.18));
+    animation: iconFloat 6s ease-in-out infinite;
+    will-change: transform;
+  }
+  .why-item:nth-child(2) .why-icon { animation-delay: -1.5s; }
+  .why-item:nth-child(3) .why-icon { animation-delay: -3s; }
+  .why-item:nth-child(4) .why-icon { animation-delay: -4.5s; }
+  .why-icon svg { width: 100%; height: 100%; stroke: currentColor; stroke-width: 1.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+  @keyframes iconFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .why-item::before, .why-icon { animation: none; }
+  }
+
+  @media (max-width: 1024px) {
+    .why-grid { grid-template-columns: 1fr 1fr; }
+    .why-item { aspect-ratio: auto; min-height: 360px; }
+  }
+  @media (max-width: 600px) {
+    .why-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ============================================
+     COMMENT CA MARCHE — frise
+     ============================================ */
+  .steps { position: relative; }
+  .step {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 96px;
+    align-items: center;
+    padding: 80px 0;
+    position: relative;
+  }
+  .step:nth-child(even) .step-text { order: 2; }
+  .step:nth-child(even) .step-visual { order: 1; }
+  .step-number {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 240px;
+    font-weight: 600;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--metal);
+    margin-bottom: 24px;
+  }
+  .step-text h3 { font-size: 36px; font-family: 'Inter Tight', sans-serif; font-weight: 500; letter-spacing: -0.015em; margin-bottom: 16px; }
+  .step-text .body { font-size: 17px; max-width: 48ch; }
+  .step-visual {
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(180deg, #2E325A 0%, #1A1D36 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .steps-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent 0%, var(--metal) 8%, var(--metal) 92%, transparent 100%);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .mockup-browser {
+    position: absolute;
+    inset: 32px;
+    background: #1A1D36;
+    border-radius: 10px;
+    border: 1px solid var(--border-strong);
+    overflow: hidden;
+  }
+  .mockup-bar { height: 28px; background: #21253D; display: flex; align-items: center; padding: 0 12px; gap: 6px; border-bottom: 1px solid var(--border); }
+  .mockup-bar span { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.12); }
+  .mockup-body { padding: 24px; }
+  .mockup-line { height: 10px; background: var(--placeholder); border-radius: 4px; margin-bottom: 12px; }
+  .mockup-line.short { width: 40%; }
+  .mockup-line.medium { width: 70%; }
+  .mockup-input { height: 38px; background: var(--placeholder); border-radius: 8px; border: 1px solid var(--border); margin-bottom: 12px; }
+  .mockup-btn { display: inline-block; padding: 10px 20px; background: var(--metal); border-radius: 999px; color: #1A1814; font-size: 12px; font-weight: 500; margin-top: 8px; }
+
+  .mockup-doc {
+    position: absolute;
+    inset: 40px;
+    background: #F5F3EE;
+    border-radius: 8px;
+    transform: rotate(-3deg);
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6);
+    padding: 28px 24px;
+    color: #1A1814;
+  }
+  .mockup-doc-h { font-family: 'Inter Tight', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 0.04em; margin-bottom: 16px; color: var(--metal-deep); }
+  .mockup-doc-line { height: 6px; background: rgba(26, 24, 20, 0.12); border-radius: 3px; margin-bottom: 9px; }
+  .mockup-doc-line.s { width: 38%; }
+  .mockup-doc-line.m { width: 72%; }
+  .mockup-doc-sig { margin-top: 18px; height: 22px; width: 110px; background: linear-gradient(90deg, var(--metal-deep), transparent); border-radius: 3px; opacity: 0.5; }
+
+  .mockup-dash {
+    position: absolute;
+    inset: 24px;
+    background: #21253D;
+    border-radius: 10px;
+    border: 1px solid var(--border-strong);
+    padding: 18px;
+  }
+  .mockup-dash-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+  .mockup-dash-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--metal); flex-shrink: 0; }
+  .mockup-dash-row span:first-of-type { flex: 1; color: var(--text-primary); }
+
+  .mockup-key {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(ellipse at center, rgba(200, 183, 154, 0.15), transparent 60%),
+      linear-gradient(180deg, #2E325A 0%, #14172B 100%);
+  }
+  .mockup-key svg { width: 140px; height: 140px; color: var(--metal); opacity: 0.85; filter: drop-shadow(0 8px 24px rgba(200, 183, 154, 0.25)); }
+
+  /* ============================================
+     POUR QUI — split
+     ============================================ */
+  .for-who {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0;
+  }
+  .for-who-col {
+    padding: 140px 80px;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: filter 350ms var(--ease-soft);
+    position: relative;
+  }
+  .for-who-col:first-child { background: var(--bg-primary); border-right: 1px solid var(--metal); }
+  .for-who-col:last-child { background: var(--bg-secondary); }
+  .for-who:hover .for-who-col:not(:hover) { filter: saturate(0.5) brightness(0.7); }
+  .for-who-category {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 40px;
+    font-family: 'Inter Tight', 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: clamp(56px, 5.4vw, 80px);
+    letter-spacing: -0.035em;
+    line-height: 1;
+    color: var(--text-primary);
+  }
+  .for-who-category .num {
+    font-size: 0.28em;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--metal);
+  }
+  .for-who-col h2 { font-size: 36px; font-family: 'Inter Tight', sans-serif; font-weight: 500; letter-spacing: -0.015em; line-height: 1.15; margin-bottom: 24px; color: var(--text-primary); }
+  .for-who-col .body { max-width: 42ch; margin-bottom: 28px; }
+  .bullets { list-style: none; margin-bottom: 36px; }
+  .bullets li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    font-size: 15px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+  }
+  .bullets li::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    margin-top: 4px;
+    flex-shrink: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C8B79A' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  /* ============================================
+     SOCIAL PROOF
+     ============================================ */
+  .proof-head { text-align: center; margin-bottom: 80px; }
+  .proof-head h2 { margin-bottom: 64px; }
+  .proof-stat {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: clamp(80px, 12vw, 160px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--text-primary);
+  }
+  .proof-stat-sub { margin-top: 16px; color: var(--text-secondary); font-size: 16px; }
+  .testimonials {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 64px;
+  }
+  .testimonial {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    position: relative;
+  }
+  .testimonial-quote {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 44px;
+    line-height: 0.6;
+    color: var(--metal);
+    margin-bottom: 16px;
+    height: 24px;
+  }
+  .testimonial-body { color: var(--text-primary); font-size: 16px; line-height: 1.55; margin-bottom: 24px; }
+  .testimonial-meta { font-size: 13px; color: var(--text-secondary); border-top: 1px solid var(--border); padding-top: 16px; }
+  .testimonial-meta strong { color: var(--text-primary); font-weight: 500; }
+
+  .partners {
+    margin-top: 96px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 48px;
+    opacity: 0.6;
+    flex-wrap: wrap;
+  }
+  .partner-logo {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 18px;
+    color: var(--text-secondary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    filter: grayscale(1);
+  }
+
+  /* ============================================
+     FAQ
+     ============================================ */
+  .faq { background: var(--bg-primary); }
+  .faq-container { max-width: 880px; margin: 0 auto; }
+  .faq h2 { margin-bottom: 64px; }
+  .faq-item { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+  .faq-q {
+    width: 100%;
+    text-align: left;
+    padding: 32px 0;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+  .faq-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: var(--metal);
+    transition: transform 300ms var(--ease-soft);
+    position: relative;
+  }
+  .faq-icon::before,
+  .faq-icon::after {
+    content: '';
+    position: absolute;
+    background: var(--metal);
+    border-radius: 1px;
+  }
+  .faq-icon::before { top: 50%; left: 0; right: 0; height: 1.5px; transform: translateY(-50%); }
+  .faq-icon::after { left: 50%; top: 0; bottom: 0; width: 1.5px; transform: translateX(-50%); }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 300ms var(--ease-soft), padding 300ms var(--ease-soft);
+    color: var(--text-secondary);
+    font-size: 16px;
+    line-height: 1.65;
+    padding: 0;
+  }
+  .faq-item.open .faq-a { max-height: 320px; padding: 0 0 32px 0; }
+
+  /* ============================================
+     CTA FINAL
+     ============================================ */
+  .final-cta {
+    position: relative;
+    padding: 200px 0;
+    text-align: center;
+    background-color: #1A1D36;
+    background-image: radial-gradient(ellipse at 70% 30%, rgba(200, 183, 154, 0.10), transparent 55%);
+    overflow: hidden;
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(26, 29, 54, 0.55) 0%, rgba(26, 29, 54, 0.85) 70%, rgba(26, 29, 54, 0.95) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .final-cta > .container { position: relative; z-index: 1; }
+  .final-cta .overline { margin-bottom: 28px; display: inline-block; }
+  .final-cta h2 { margin-bottom: 48px; }
+  .final-cta-micro { margin-top: 20px; font-size: 13px; color: var(--text-secondary); }
+
+  /* ============================================
+     FOOTER
+     ============================================ */
+  footer {
+    background: var(--bg-darker);
+    padding: 96px 0 32px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 48px;
+    margin-bottom: 72px;
+  }
+  .footer-col h4 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--metal);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { padding: 6px 0; }
+  .footer-col a { font-size: 14px; color: var(--text-secondary); transition: color 200ms; }
+  .footer-col a:hover { color: var(--text-primary); }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  /* ============================================
+     SCROLL REVEAL
+     ============================================ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 600ms var(--ease-soft), transform 600ms var(--ease-soft);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* ============================================
+     CUSTOM CURSOR
+     ============================================ */
+  .cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--metal);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999;
+    transition: transform 200ms var(--ease-soft), opacity 200ms;
+    mix-blend-mode: difference;
+    opacity: 0;
+  }
+  .cursor.visible { opacity: 1; }
+  .cursor.hover { transform: scale(1.6); background: rgba(200, 183, 154, 0.2); }
+
+  /* ============================================
+     MOBILE
+     ============================================ */
+  @media (max-width: 900px) {
+    :root { --section-y: 96px; --gutter: 20px; }
+    .nav-links { display: none; }
+    .nav-cta .btn:first-child { display: none; }
+    .hero { padding-top: 120px; min-height: 600px; padding-bottom: 80px; background-position: 70% center; }
+    .hero::before {
+      background: linear-gradient(180deg, rgba(10, 11, 18, 0.85) 0%, rgba(10, 11, 18, 0.5) 60%, transparent 100%);
+    }
+    .hero-content { max-width: 100%; }
+    .trust-inner { grid-template-columns: 1fr 1fr; height: auto; }
+    .trust { height: auto; }
+    .trust-item { padding: 24px 12px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .trust-item:nth-child(even) { border-right: none; }
+    .trust-item:nth-last-child(-n+2) { border-bottom: none; }
+    .why-grid { grid-template-columns: 1fr; }
+    .step { grid-template-columns: 1fr; gap: 40px; padding: 48px 0; }
+    .step:nth-child(even) .step-text { order: 1; }
+    .step:nth-child(even) .step-visual { order: 2; }
+    .step-number { font-size: 140px; }
+    .step-text h3 { font-size: 28px; }
+    .steps-line { display: none; }
+    .for-who { grid-template-columns: 1fr; }
+    .for-who-col { padding: 80px 24px; min-height: auto; }
+    .for-who-col:first-child { border-right: none; border-bottom: 1px solid var(--metal); }
+    .testimonials { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+    .section-head { margin-bottom: 56px; }
+    .cursor { display: none; }
+  }
+</style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header id="hdr">
-    <div class="hdr-inner">
-      <a href="#hero" class="logo" aria-label="ALB Auto 73">
-        <img src="logo-albauto.png" alt="Logo ALB Auto 73"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-        <div class="logo-txt" style="display:none;">
-          <span class="a">ALB</span><span class="b">Auto</span><span class="c">73</span>
-        </div>
-      </a>
+<div class="cursor" id="cursor"></div>
 
-      <nav class="hdr-nav">
-        <a href="#hero">Accueil</a>
-        <a href="#services">Services</a>
-        <a href="#pourquoi">À propos</a>
-        <a href="#contact">Contact</a>
-      </nav>
-
-      <a href="#contact" class="hdr-cta d">
-        <i class="fa-solid fa-phone-flip"></i> Prendre contact
-      </a>
-
-      <button class="burger" id="burger" aria-label="Menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-
-    <nav class="mob-nav" id="mob-nav">
-      <a href="#hero">Accueil</a>
-      <a href="#services">Services</a>
-      <a href="#pourquoi">À propos</a>
-      <a href="#contact">Contact</a>
-      <a href="#contact" class="hdr-cta">Prendre contact</a>
-    </nav>
-  </header>
-
-
-  <!-- HERO -->
-  <section id="hero">
-    <div class="g1"></div>
-    <div class="g2"></div>
-
-    <div class="hero-body reveal">
-
-      <div class="hero-chip">
-        <span class="dot"></span>
-        Savoie · Albertville · Isère
-      </div>
-
-      <h1 class="hero-h">
-        <span class="w1">Votre véhicule</span>
-        <span class="w2">mérite mieux</span>
-        <span class="w3">qu'une annonce</span>
-      </h1>
-
-      <p class="hero-sub">
-        ALB Auto 73 rachète, vend et gère vos mandats de vente en Savoie.
-        Zéro compromis sur la transparence, zéro frais caché.
-      </p>
-
-      <!-- Widget ACHETER / VENDRE -->
-      <div class="widget" role="region" aria-label="Recherche véhicule">
-
-        <div class="w-buy">
-          <div class="w-head">
-            <div class="w-label">Acheter<br>un véhicule</div>
-            <div class="w-kpi">
-              <strong>+20</strong>
-              <span>véhicules<br>en stock</span>
-            </div>
-          </div>
-          <div class="w-fields">
-            <select aria-label="Type de véhicule">
-              <option value="">Type de véhicule</option>
-              <option>Citadine</option><option>Berline</option>
-              <option>SUV / 4×4</option><option>Break</option>
-              <option>Utilitaire</option>
-            </select>
-            <select aria-label="Budget">
-              <option value="">Budget max.</option>
-              <option>– de 5 000 €</option><option>5 – 10 000 €</option>
-              <option>10 – 20 000 €</option><option>20 – 35 000 €</option>
-              <option>+ 35 000 €</option>
-            </select>
-            <select aria-label="Carburant">
-              <option value="">Carburant</option>
-              <option>Essence</option><option>Diesel</option>
-              <option>Hybride</option><option>Électrique</option>
-            </select>
-            <select aria-label="Kilométrage">
-              <option value="">Kilométrage</option>
-              <option>– de 50 000 km</option><option>50 – 100 000 km</option>
-              <option>100 – 150 000 km</option><option>+ 150 000 km</option>
-            </select>
-          </div>
-          <div class="w-foot">
-            <button class="w-more" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">+ d'options</button>
-            <button class="btn-go" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-              Rechercher <i class="fa-solid fa-chevron-right"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="w-sell" role="button" tabindex="0"
-             onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})"
-             onkeydown="if(event.key==='Enter')document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-          <div class="w-head">
-            <div class="w-label">Vendre<br>votre véhicule</div>
-            <div class="w-kpi">
-              <strong>24h</strong>
-              <span>délai de<br>réponse</span>
-            </div>
-          </div>
-          <div class="sell-badge"><i class="fa-solid fa-bolt"></i> Estimation gratuite</div>
-          <div class="sell-args" aria-hidden="true">
-            <div class="sell-arg"><i class="fa-solid fa-check"></i> Paiement immédiat et sécurisé</div>
-            <div class="sell-arg"><i class="fa-solid fa-check"></i> Mandat : on vend à votre place</div>
-            <div class="sell-arg"><i class="fa-solid fa-check"></i> Démarches administratives incluses</div>
-            <div class="sell-arg"><i class="fa-solid fa-check"></i> Particuliers &amp; professionnels</div>
-          </div>
-          <button class="btn-sell">Obtenir une cote <i class="fa-solid fa-arrow-right"></i></button>
-        </div>
-
-      </div>
-
-      <div class="hero-strip">
-        <div class="hs-item"><i class="fa-solid fa-shield-halved"></i> Véhicules garantis</div>
-        <div class="hs-item"><i class="fa-solid fa-map-pin"></i> 100 % local Savoie</div>
-        <div class="hs-item"><i class="fa-solid fa-clock"></i> Réponse sous 24 h</div>
-      </div>
-
-    </div>
-  </section>
-
-
-  <!-- MARQUEE -->
-  <div class="marquee-wrap" aria-hidden="true">
-    <div class="marquee-track">
-      <!-- Dupliqué pour boucle infinie -->
-      <span class="marquee-item"><i class="fa-solid fa-shield-halved"></i> Véhicules garantis</span>
-      <span class="marquee-item"><i class="fa-solid fa-handshake"></i> Rachat immédiat</span>
-      <span class="marquee-item"><i class="fa-solid fa-map-pin"></i> Albertville — Savoie 73</span>
-      <span class="marquee-item"><i class="fa-solid fa-file-signature"></i> Mandat de vente</span>
-      <span class="marquee-item"><i class="fa-solid fa-clock"></i> Réponse 24h</span>
-      <span class="marquee-item"><i class="fa-solid fa-euro-sign"></i> Estimation gratuite</span>
-      <span class="marquee-item"><i class="fa-solid fa-car"></i> Achat &amp; Revente</span>
-      <span class="marquee-item"><i class="fa-solid fa-user-check"></i> Pros &amp; particuliers</span>
-      <!-- Copie pour continuité -->
-      <span class="marquee-item"><i class="fa-solid fa-shield-halved"></i> Véhicules garantis</span>
-      <span class="marquee-item"><i class="fa-solid fa-handshake"></i> Rachat immédiat</span>
-      <span class="marquee-item"><i class="fa-solid fa-map-pin"></i> Albertville — Savoie 73</span>
-      <span class="marquee-item"><i class="fa-solid fa-file-signature"></i> Mandat de vente</span>
-      <span class="marquee-item"><i class="fa-solid fa-clock"></i> Réponse 24h</span>
-      <span class="marquee-item"><i class="fa-solid fa-euro-sign"></i> Estimation gratuite</span>
-      <span class="marquee-item"><i class="fa-solid fa-car"></i> Achat &amp; Revente</span>
-      <span class="marquee-item"><i class="fa-solid fa-user-check"></i> Pros &amp; particuliers</span>
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="#" class="logo" aria-label="ALB Auto 73 — accueil">
+      <img src="logo-albauto.png" alt="ALB Auto 73"
+           onerror="this.style.display='none'" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="#vendre">Vendre</a></li>
+      <li><a href="#acheter">Acheter</a></li>
+      <li><a href="#methode">Notre méthode</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#" class="btn btn-ghost">Parler à un conseiller</a>
+      <a href="#estimation" class="btn btn-primary">Estimer mon véhicule</a>
     </div>
   </div>
+</nav>
 
-
-  <!-- SERVICES -->
-  <section id="services">
-    <div class="s-wrap">
-      <div class="svc-head reveal">
-        <span class="eyebrow">Nos services</span>
-        <h2 class="s-title">Ce que<br>nous <em>faisons</em></h2>
-        <p class="s-lead">Achat, vente, mandat — un seul interlocuteur, du premier contact à la signature.</p>
-      </div>
-
-      <div class="svc-grid">
-
-        <article class="svc-card reveal" data-d="1">
-          <div class="svc-n">01</div>
-          <div class="svc-tag">Achat</div>
-          <h3>Rachat de véhicules</h3>
-          <p>Vous vendez, on rachète. Estimation honnête, paiement rapide, démarches incluses.</p>
-          <ul class="svc-list">
-            <li><i class="fa-solid fa-check"></i> Estimation gratuite &amp; sans engagement</li>
-            <li><i class="fa-solid fa-check"></i> Paiement immédiat et sécurisé</li>
-            <li><i class="fa-solid fa-check"></i> Particuliers &amp; flottes professionnelles</li>
-            <li><i class="fa-solid fa-check"></i> Formalités administratives prises en charge</li>
-          </ul>
-          <button class="svc-link" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-            Demander une cote <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </article>
-
-        <article class="svc-card reveal" data-d="2">
-          <div class="svc-n">02</div>
-          <div class="svc-tag">Vente</div>
-          <h3>Revente de véhicules</h3>
-          <p>Un stock sélectionné, contrôlé, documenté. Achetez sereinement en Savoie.</p>
-          <ul class="svc-list">
-            <li><i class="fa-solid fa-check"></i> Véhicules vérifiés &amp; garantis</li>
-            <li><i class="fa-solid fa-check"></i> Historiques d'entretien disponibles</li>
-            <li><i class="fa-solid fa-check"></i> Financement possible</li>
-            <li><i class="fa-solid fa-check"></i> Essai avant achat</li>
-          </ul>
-          <button class="svc-link" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-            Voir le stock <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </article>
-
-        <article class="svc-card reveal" data-d="3">
-          <div class="svc-n">03</div>
-          <div class="svc-tag">Mandat</div>
-          <h3>Mandat de vente</h3>
-          <p>On vend votre voiture à votre place. Vous fixez votre prix, on gère le reste.</p>
-          <ul class="svc-list">
-            <li><i class="fa-solid fa-check"></i> Diffusion multi-plateformes</li>
-            <li><i class="fa-solid fa-check"></i> Visites &amp; négociations gérées</li>
-            <li><i class="fa-solid fa-check"></i> Vous touchez votre prix de vente</li>
-            <li><i class="fa-solid fa-check"></i> Zéro tracas, zéro démarche</li>
-          </ul>
-          <button class="svc-link" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-            En savoir plus <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </article>
-
-      </div>
-    </div>
-  </section>
-
-
-  <!-- POURQUOI -->
-  <section id="pourquoi">
-    <div class="s-wrap">
-      <div class="pq-layout">
-
-        <div class="pq-left reveal">
-          <span class="eyebrow">Pourquoi nous choisir</span>
-          <h2 class="s-title">4 raisons de nous<br><em>faire confiance</em></h2>
-          <p class="s-lead">Local, transparent, réactif. Pas de jargon, pas de frais cachés. Juste du sérieux, ancré à Albertville.</p>
-          <button class="btn-contact" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-            <i class="fa-solid fa-arrow-right"></i> Prendre contact
-          </button>
-        </div>
-
-        <div class="bento">
-          <div class="bento-card reveal" data-d="1">
-            <div class="bn-num">01</div>
-            <h3>Expertise automobile</h3>
-            <p>Une connaissance approfondie du marché local pour estimer et céder chaque véhicule au juste prix, sans surenchère.</p>
-          </div>
-          <div class="bento-card reveal" data-d="2">
-            <div class="bn-num">02</div>
-            <h3>Transparence totale</h3>
-            <p>Zéro frais caché, zéro mauvaise surprise. Chaque étape est documentée et expliquée avant signature.</p>
-          </div>
-          <div class="bento-card reveal" data-d="3">
-            <div class="bn-num">03</div>
-            <h3>Ancrage local Savoie</h3>
-            <p>Un interlocuteur unique, joignable, basé à Albertville (73) et actif sur l'Isère (38). Une vraie personne, pas un call-center.</p>
-          </div>
-          <div class="bento-card reveal" data-d="4">
-            <div class="bn-num">04</div>
-            <h3>Réactivité garantie</h3>
-            <p>Réponse sous 24 h. Du premier contact à la signature, on respecte votre temps sans vous faire courir.</p>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-
-  <!-- STATS -->
-  <section id="stats">
-    <div class="s-wrap">
-      <div class="stats-manifesto reveal">
-        <p class="manifesto-txt">
-          En <strong>10&nbsp;ans</strong>, nous avons traité plus de
-          <strong>150&nbsp;véhicules</strong> dans
-          <strong>2&nbsp;départements</strong>, avec un seul engagement&nbsp;:
-          vous répondre en <strong>24&nbsp;heures</strong>, sans exception.
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <p class="overline reveal">Mandat de vente automobile · Albertville, Savoie</p>
+        <h1 class="display h1 hero-h1 reveal">
+          Votre véhicule mérite mieux qu'une <span class="underlined">annonce.</span>
+        </h1>
+        <p class="body-lead reveal">
+          ALB Auto 73 se charge de l'estimation, de la mise en vente et de la transaction. Vous fixez le prix de réserve, nous trouvons l'acheteur.
         </p>
-        <span class="manifesto-sig">ALB Auto 73 · Albertville, Savoie</span>
+        <div class="hero-ctas reveal">
+          <a href="#estimation" class="btn btn-primary">Estimer mon véhicule</a>
+          <a href="#acheter" class="btn btn-ghost">Voir les véhicules disponibles</a>
+        </div>
+        <p class="hero-reassurance reveal">
+          <span>Estimation gratuite</span><span>Sans engagement</span><span>Réponse sous 24h</span>
+        </p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
+<section class="trust">
+  <div class="trust-inner">
+    <div class="trust-item">
+      <div class="trust-number">
+        <span class="trust-counter" data-target="32" data-decimals="0">0</span>
+        <span class="unit">jours</span>
+      </div>
+      <div class="trust-label">Délai moyen de vente</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-number">
+        <span class="trust-counter" data-target="4.8" data-decimals="1">0</span>
+        <span class="unit">/5</span>
+      </div>
+      <div class="trust-label">Satisfaction client</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-number">
+        <span class="trust-counter" data-target="150" data-decimals="0">0</span>
+        <span class="unit">+</span>
+      </div>
+      <div class="trust-label">Véhicules traités</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-number">
+        <span class="trust-counter" data-target="10" data-decimals="0">0</span>
+        <span class="unit">ans</span>
+      </div>
+      <div class="trust-label">Années d'expérience</div>
+    </div>
+  </div>
+</section>
 
-  <!-- CONTACT -->
-  <section id="contact">
-    <div class="s-wrap">
-      <div class="ct-grid">
-
-        <div class="ct-left reveal">
-          <div>
-            <span class="eyebrow">Contact</span>
-            <h2 class="s-title">Parlons de<br>votre <em>projet</em></h2>
-            <p class="s-lead">Un achat, une vente, un mandat ? Notre équipe revient vers vous sous 24 h.</p>
-          </div>
-          <div class="ct-info">
-            <div class="ct-row">
-              <div class="ct-ico"><i class="fa-solid fa-location-dot"></i></div>
-              <div class="ct-txt">
-                <strong>27 chemin de la Fonderie</strong>
-                <span>73200 Albertville — Savoie</span>
-              </div>
-            </div>
-            <div class="ct-row">
-              <div class="ct-ico"><i class="fa-solid fa-phone"></i></div>
-              <div class="ct-txt">
-                <strong>+33 (0)6 XX XX XX XX</strong>
-                <span>Lun – Sam, 9h – 19h</span>
-              </div>
-            </div>
-            <div class="ct-row">
-              <div class="ct-ico"><i class="fa-solid fa-envelope"></i></div>
-              <div class="ct-txt">
-                <strong>contact@albauto73.fr</strong>
-                <span>Réponse sous 24 h</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="ct-form reveal" data-d="2">
-          <p class="ct-form-title">Envoyer un message</p>
-          <form id="cform" novalidate>
-            <div class="f-grid">
-              <div class="f-group">
-                <label for="fn">Nom complet *</label>
-                <input type="text" id="fn" placeholder="Jean Dupont" autocomplete="name" />
-                <span class="f-err" id="en">Veuillez saisir votre nom.</span>
-              </div>
-              <div class="f-group">
-                <label for="ft">Téléphone *</label>
-                <input type="tel" id="ft" placeholder="06 00 00 00 00" autocomplete="tel" />
-                <span class="f-err" id="et">Numéro invalide.</span>
-              </div>
-              <div class="f-group span2">
-                <label for="fe">Email *</label>
-                <input type="email" id="fe" placeholder="jean@exemple.fr" autocomplete="email" />
-                <span class="f-err" id="ee">Adresse invalide.</span>
-              </div>
-              <div class="f-group span2">
-                <label for="fd">Type de demande *</label>
-                <select id="fd">
-                  <option value="">— Sélectionner —</option>
-                  <option value="achat">Acheter un véhicule</option>
-                  <option value="vente">Vendre mon véhicule</option>
-                  <option value="mandat">Mandat de vente</option>
-                  <option value="info">Renseignement général</option>
-                </select>
-                <span class="f-err" id="ed">Choisissez un type de demande.</span>
-              </div>
-              <div class="f-group span2">
-                <label for="fm">Message</label>
-                <textarea id="fm" placeholder="Décrivez votre véhicule ou votre besoin…"></textarea>
-              </div>
-            </div>
-            <button type="submit" class="btn-send">
-              <i class="fa-solid fa-paper-plane"></i> Envoyer ma demande
-            </button>
-            <p class="f-legal">Champs * obligatoires. Données utilisées uniquement pour votre demande (RGPD).</p>
-          </form>
-          <div class="f-ok" id="fok" role="alert">
-            <i class="fa-solid fa-circle-check"></i>
-            <h3>Message envoyé !</h3>
-            <p>Notre équipe vous recontacte dans les 24 h.</p>
+<section id="methode">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="overline">Pourquoi ALB Auto 73</p>
+      <h2 class="display h2">Une vente accompagnée,<br />pas un dépôt-vente.</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-item reveal">
+        <h3>Estimation argumentée</h3>
+        <p>Cote argus, transactions récentes, état réel du véhicule.</p>
+        <div class="why-visual">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg>
           </div>
         </div>
-
+      </div>
+      <div class="why-item reveal">
+        <h3>Mandat sans surprise</h3>
+        <p>Durée et commission écrites avant signature.</p>
+        <div class="why-visual">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="why-item reveal">
+        <h3>Transaction sécurisée</h3>
+        <p>Vérification acheteur, contrôle des papiers, remise des clés.</p>
+        <div class="why-visual">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="why-item reveal">
+        <h3>Un week-end retrouvé</h3>
+        <p>Pas d'annonces, pas de visites, pas de négociations.</p>
+        <div class="why-visual">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
+<section class="section-alt" id="vendre">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="overline">Comment ça marche</p>
+      <h2 class="display h2">Quatre étapes,<br />zéro friction.</h2>
+    </div>
 
-  <!-- FOOTER -->
-  <footer id="footer">
-    <div class="s-wrap">
-      <div class="ft-grid">
-        <div class="ft-brand">
-          <a href="#hero" class="logo" aria-label="ALB Auto 73">
-            <img src="logo-albauto.png" alt="Logo ALB Auto 73" style="height:32px;"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-            <div class="logo-txt" style="display:none;">
-              <span class="a">ALB</span><span class="b">Auto</span><span class="c">73</span>
+    <div class="steps">
+      <div class="steps-line"></div>
+
+      <div class="step">
+        <div class="step-text reveal">
+          <div class="step-number">01</div>
+          <h3>Estimation gratuite</h3>
+          <p class="body">Vous renseignez les caractéristiques de votre véhicule. Sous 24h, vous recevez une fourchette d'estimation argumentée.</p>
+        </div>
+        <div class="step-visual reveal">
+          <div class="mockup-browser">
+            <div class="mockup-bar"><span></span><span></span><span></span></div>
+            <div class="mockup-body">
+              <div class="mockup-line short" style="background: var(--metal); opacity: 0.6;"></div>
+              <div style="height: 14px;"></div>
+              <div class="mockup-line medium"></div>
+              <div class="mockup-input"></div>
+              <div class="mockup-input"></div>
+              <div class="mockup-line short"></div>
+              <div class="mockup-input"></div>
+              <span class="mockup-btn">Recevoir mon estimation</span>
             </div>
-          </a>
-          <p>Achat, vente et mandat de véhicules en Savoie et Isère. Transparence &amp; proximité.</p>
-          <div class="socials">
-            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
           </div>
         </div>
-        <div class="ft-col">
-          <h5>Services</h5>
-          <ul>
-            <li><a href="#services">Rachat de véhicules</a></li>
-            <li><a href="#services">Revente de véhicules</a></li>
-            <li><a href="#services">Mandat de vente</a></li>
-            <li><a href="#contact">Estimation gratuite</a></li>
-          </ul>
+      </div>
+
+      <div class="step">
+        <div class="step-text reveal">
+          <div class="step-number">02</div>
+          <h3>Signature du mandat de vente</h3>
+          <p class="body">Durée, commission, prix de réserve : tout est écrit. Vous signez en agence ou à distance.</p>
         </div>
-        <div class="ft-col">
-          <h5>Informations</h5>
-          <ul>
-            <li><a href="#pourquoi">À propos</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="#">Mentions légales</a></li>
-            <li><a href="#">Politique de confidentialité</a></li>
-          </ul>
+        <div class="step-visual reveal">
+          <div class="mockup-doc">
+            <div class="mockup-doc-h">Mandat de vente — ALB Auto 73</div>
+            <div class="mockup-doc-line m"></div>
+            <div class="mockup-doc-line s"></div>
+            <div class="mockup-doc-line m"></div>
+            <div class="mockup-doc-line m"></div>
+            <div class="mockup-doc-line s"></div>
+            <div class="mockup-doc-line m"></div>
+            <div class="mockup-doc-sig"></div>
+          </div>
         </div>
       </div>
-      <div class="ft-bottom">
-        <span>© 2024 ALB Auto 73 — Tous droits réservés.</span>
-        <span>27 chemin de la Fonderie, 73200 Albertville — <a href="#">Mentions légales</a></span>
+
+      <div class="step">
+        <div class="step-text reveal">
+          <div class="step-number">03</div>
+          <h3>Mise en vente et qualification des acheteurs</h3>
+          <p class="body">Nous diffusons l'annonce, filtrons les contacts, organisons les essais. Vous suivez l'avancée en temps réel.</p>
+        </div>
+        <div class="step-visual reveal">
+          <div class="mockup-dash">
+            <div style="font-size: 11px; color: var(--metal); margin-bottom: 12px; letter-spacing: 0.1em; text-transform: uppercase;">Contacts qualifiés</div>
+            <div class="mockup-dash-row"><div class="mockup-dash-dot"></div><span>M. Lefèvre</span><span>Essai prévu</span></div>
+            <div class="mockup-dash-row"><div class="mockup-dash-dot" style="background: var(--text-secondary);"></div><span>Mme Garnier</span><span>En attente</span></div>
+            <div class="mockup-dash-row"><div class="mockup-dash-dot"></div><span>M. Bertin</span><span>Offre reçue</span></div>
+            <div class="mockup-dash-row"><div class="mockup-dash-dot" style="background: var(--text-secondary);"></div><span>Mme Roy</span><span>À recontacter</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-text reveal">
+          <div class="step-number">04</div>
+          <h3>Transaction et remise des clés</h3>
+          <p class="body">Vérification des fonds, signature des documents, remise du véhicule. Vous recevez le produit de la vente.</p>
+        </div>
+        <div class="step-visual reveal">
+          <div class="mockup-key">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="8" cy="15" r="4"/>
+              <path d="M11 12l8-8"/>
+              <path d="M17 6l3 3"/>
+              <path d="M14 9l3 3"/>
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
-  </footer>
+  </div>
+</section>
 
-  <button id="btt" aria-label="Haut de page"><i class="fa-solid fa-chevron-up"></i></button>
+<section style="padding: 0;" id="acheter">
+  <div class="for-who">
+    <div class="for-who-col">
+      <div class="for-who-category reveal">
+        <span class="num">01 / VENTE</span>
+      </div>
+      <div class="for-who-category reveal" style="margin-bottom: 32px;">Vendre votre véhicule.</div>
+      <h2 class="reveal">Posez les clés, encaissez le prix de réserve.</h2>
+      <p class="body reveal">Estimation argumentée, mise en vente sur les bonnes plateformes, qualification des acheteurs, signature : ALB Auto 73 pilote chaque étape. Vous fixez le seuil, vous validez chaque offre.</p>
+      <ul class="bullets reveal">
+        <li>Mandat écrit, commission fixée avant signature</li>
+        <li>Diffusion de l'annonce sur les plateformes pertinentes</li>
+        <li>Acheteurs filtrés, essais accompagnés</li>
+      </ul>
+      <a href="#estimation" class="btn btn-ghost reveal" style="align-self: flex-start;">Démarrer mon mandat</a>
+    </div>
+    <div class="for-who-col">
+      <div class="for-who-category reveal">
+        <span class="num">02 / ACHAT</span>
+      </div>
+      <div class="for-who-category reveal" style="margin-bottom: 32px;">Acheter un véhicule vérifié.</div>
+      <h2 class="reveal">Un seul interlocuteur, du premier essai aux clés.</h2>
+      <p class="body reveal">Chaque véhicule du stock passe au contrôle mécanique et administratif avant d'apparaître en ligne. Historique complet, carnet d'entretien à jour, essai accompagné.</p>
+      <ul class="bullets reveal">
+        <li>Contrôle technique récent, historique d'entretien complet</li>
+        <li>Essai sans engagement, accompagné par un conseiller</li>
+        <li>Solutions de financement et garantie disponibles</li>
+      </ul>
+      <a href="#" class="btn btn-ghost reveal" style="align-self: flex-start;">Voir le stock disponible</a>
+    </div>
+  </div>
+</section>
 
+<section class="section-alt">
+  <div class="container">
+    <div class="proof-head">
+      <h2 class="display h2 reveal" style="margin-bottom: 80px;">Ils ont choisi ALB Auto 73.</h2>
+      <div class="proof-stat reveal">150</div>
+      <p class="proof-stat-sub reveal">véhicules traités depuis notre ouverture</p>
+    </div>
 
-  <!-- JS -->
-  <script>
-    /* Burger */
-    const burger = document.getElementById('burger');
-    const mobNav = document.getElementById('mob-nav');
-    burger.addEventListener('click', () => {
-      const o = mobNav.classList.toggle('open');
-      burger.classList.toggle('open', o);
-      burger.setAttribute('aria-expanded', o);
+    <div class="testimonials">
+      <article class="testimonial reveal">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-body">Estimation honnête, sans la moindre pression. Le véhicule est parti en trois semaines, au prix annoncé. Je n'ai eu à m'occuper de rien.</p>
+        <div class="testimonial-meta"><strong>Cédric L.</strong> · Albertville · Audi A4 Avant</div>
+      </article>
+      <article class="testimonial reveal">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-body">J'avais déjà tenté la vente entre particuliers. Cette fois, j'ai gagné un mois de tranquillité et le prix final était identique. Aucun regret.</p>
+        <div class="testimonial-meta"><strong>Hélène M.</strong> · Chambéry · BMW Série 3</div>
+      </article>
+      <article class="testimonial reveal">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-body">Achat d'un véhicule récent via leur stock. Historique limpide, essai détendu, paperasse réglée le jour même. Sérieux du premier au dernier échange.</p>
+        <div class="testimonial-meta"><strong>Mathieu T.</strong> · Grenoble · Peugeot 3008</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="container faq-container">
+    <h2 class="display h2 reveal">Les questions<br />qu'on nous pose.</h2>
+
+    <div class="faq-item reveal">
+      <button class="faq-q">
+        <span>Quelle est votre commission ?</span>
+        <span class="faq-icon"></span>
+      </button>
+      <div class="faq-a">
+        <p>La commission est fixée à la signature du mandat, en fonction du prix de réserve et du type de véhicule. Elle est due uniquement si la vente est conclue. Aucun frais d'estimation, aucun frais de mise en vente.</p>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-q">
+        <span>Quelle est la durée du mandat ?</span>
+        <span class="faq-icon"></span>
+      </button>
+      <div class="faq-a">
+        <p>Le mandat dure généralement trois mois, renouvelable d'un commun accord. La durée précise et les conditions de résiliation sont écrites dans le contrat avant signature.</p>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-q">
+        <span>Que se passe-t-il si le véhicule ne se vend pas ?</span>
+        <span class="faq-icon"></span>
+      </button>
+      <div class="faq-a">
+        <p>Vous récupérez votre véhicule sans pénalité. Nous pouvons proposer un ajustement du prix de réserve si le marché l'indique, mais vous restez décisionnaire.</p>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-q">
+        <span>Puis-je continuer à utiliser mon véhicule pendant la mise en vente ?</span>
+        <span class="faq-icon"></span>
+      </button>
+      <div class="faq-a">
+        <p>Oui. Le véhicule reste à votre disposition. Nous convenons simplement de créneaux pour les visites et les essais.</p>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-q">
+        <span>Pouvez-vous racheter directement mon véhicule ?</span>
+        <span class="faq-icon"></span>
+      </button>
+      <div class="faq-a">
+        <p>C'est une option possible si vous avez besoin d'une transaction rapide. L'offre de rachat est alors inférieure au prix de mandat car nous portons le stock. Nous précisons toujours les deux scénarios.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta" id="estimation">
+  <div class="container">
+    <p class="overline reveal">Prêt à passer à l'action ?</p>
+    <h2 class="display h2 reveal">Estimation en 2 minutes.<br />Sans engagement.</h2>
+    <a href="#" class="btn btn-primary btn-lg reveal">Lancer mon estimation</a>
+    <p class="final-cta-micro reveal">Vous serez recontacté sous 24h ouvrées.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Plan du site</h4>
+        <ul>
+          <li><a href="#vendre">Vendre</a></li>
+          <li><a href="#acheter">Acheter</a></li>
+          <li><a href="#methode">Notre méthode</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#">Mandat de vente</a></li>
+          <li><a href="#">Rachat direct</a></li>
+          <li><a href="#">Recherche véhicule</a></li>
+          <li><a href="#">Accompagnement</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Mentions légales</h4>
+        <ul>
+          <li><a href="#">CGV</a></li>
+          <li><a href="#">Mentions légales</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+          <li><a href="#">Cookies</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li>27 chemin de la Fonderie<br />73200 Albertville</li>
+          <li><a href="tel:+33600000000">+33 (0)6 XX XX XX XX</a></li>
+          <li><a href="mailto:contact@albauto73.fr">contact@albauto73.fr</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 ALB Auto 73 · Tous droits réservés</div>
+      <div>27 chemin de la Fonderie, 73200 Albertville · <a href="#">Mentions légales</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('in'); revealObserver.unobserve(e.target); }
     });
-    mobNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-      mobNav.classList.remove('open');
-      burger.classList.remove('open');
-      burger.setAttribute('aria-expanded', false);
-    }));
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
 
-    /* Reveal staggered */
-    new IntersectionObserver((entries, obs) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
-      });
-    }, { threshold: 0.08 }).observe = (() => {
-      const io = new IntersectionObserver((entries, obs) => {
-        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
-      }, { threshold: 0.08 });
-      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-    })();
+  const animateCounter = (el) => {
+    const target = parseFloat(el.dataset.target);
+    const decimals = parseInt(el.dataset.decimals || '0', 10);
+    const duration = 1800;
+    const start = performance.now();
+    const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+    const fmt = (v) => { const s = v.toFixed(decimals); return decimals > 0 ? s.replace('.', ',') : s; };
+    const step = (now) => {
+      const t = Math.min((now - start) / duration, 1);
+      el.textContent = fmt(target * easeOut(t));
+      if (t < 1) requestAnimationFrame(step);
+      else el.textContent = fmt(target);
+    };
+    requestAnimationFrame(step);
+  };
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { animateCounter(e.target); counterObserver.unobserve(e.target); } });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.trust-counter').forEach((el) => counterObserver.observe(el));
 
-    /* Back to top */
-    const btt = document.getElementById('btt');
-    window.addEventListener('scroll', () => btt.classList.toggle('on', scrollY > 400), { passive: true });
-    btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-    /* Formulaire */
-    const form = document.getElementById('cform');
-    const fok  = document.getElementById('fok');
-    function setErr(id, eid, show) {
-      document.getElementById(id).classList.toggle('err', show);
-      document.getElementById(eid).classList.toggle('on', show);
-    }
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const nom = document.getElementById('fn').value.trim();
-      const tel = document.getElementById('ft').value.trim();
-      const em  = document.getElementById('fe').value.trim();
-      const dem = document.getElementById('fd').value;
-      let ok = true;
-      setErr('fn','en', !nom);                                             if (!nom) ok = false;
-      setErr('ft','et', !/^[0-9\s\+\-\.]{9,15}$/.test(tel));             if (!/^[0-9\s\+\-\.]{9,15}$/.test(tel)) ok = false;
-      setErr('fe','ee', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em));         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) ok = false;
-      setErr('fd','ed', !dem);                                             if (!dem) ok = false;
-      if (!ok) return;
-      form.style.display = 'none';
-      fok.classList.add('on');
+  document.querySelectorAll('.faq-q').forEach((q) => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach((i) => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
     });
-    ['fn','ft','fe','fd'].forEach(id => {
-      const el = document.getElementById(id);
-      ['input','change'].forEach(ev => el.addEventListener(ev, () => el.classList.remove('err')));
-    });
-  </script>
+  });
+
+  const cursor = document.getElementById('cursor');
+  let cx = 0, cy = 0, tx = 0, ty = 0;
+  document.addEventListener('mousemove', (e) => { tx = e.clientX - 10; ty = e.clientY - 10; cursor.classList.add('visible'); });
+  document.addEventListener('mouseleave', () => cursor.classList.remove('visible'));
+  function loop() { cx += (tx - cx) * 0.18; cy += (ty - cy) * 0.18; cursor.style.transform = `translate(${cx}px, ${cy}px)`; requestAnimationFrame(loop); }
+  loop();
+  document.querySelectorAll('a, button').forEach((el) => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+
+  const heroSection = document.querySelector('.hero');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y < 900 && heroSection) heroSection.style.backgroundPositionY = `calc(50% + ${y * 0.15}px)`;
+  }, { passive: true });
+</script>
+
 </body>
 </html>
