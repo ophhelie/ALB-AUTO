@@ -293,7 +293,7 @@
      ============================================ */
   .trust {
     background: var(--bg-secondary);
-    padding: 120px 0;
+    padding: 100px 0;
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     position: relative;
@@ -304,69 +304,42 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse at 20% 0%, rgba(200, 183, 154, 0.06), transparent 50%),
-      radial-gradient(ellipse at 90% 100%, rgba(200, 183, 154, 0.04), transparent 50%);
+      radial-gradient(ellipse at 20% 0%, rgba(200, 183, 154, 0.05), transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(200, 183, 154, 0.03), transparent 50%);
     pointer-events: none;
   }
   .trust-inner {
     position: relative;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    align-items: stretch;
-    gap: 0;
-    max-width: var(--container);
+    max-width: 820px;
     margin: 0 auto;
     padding: 0 var(--gutter);
+    text-align: center;
   }
-  .trust-item {
-    text-align: left;
-    padding: 0 40px;
-    border-right: 1px solid var(--border);
-    font-size: 14px;
-    color: var(--text-secondary);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 20px;
+  .trust-manifesto {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: clamp(1.45rem, 3.2vw, 2.6rem);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    color: rgba(245, 243, 238, 0.5);
   }
-  .trust-item:first-child { padding-left: 0; }
-  .trust-item:last-child { border-right: none; padding-right: 0; }
-  .trust-number {
-    font-family: 'Inter Tight', 'Inter', sans-serif;
-    font-weight: 700;
-    font-size: clamp(56px, 6.8vw, 104px);
-    line-height: 0.9;
-    letter-spacing: -0.045em;
+  .trust-manifesto strong {
     color: var(--text-primary);
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    font-variant-numeric: tabular-nums;
+    font-weight: 700;
   }
-  .trust-number .unit {
-    font-size: 0.42em;
+  .trust-sig {
+    display: block;
+    margin-top: 32px;
+    font-size: 12px;
     font-weight: 500;
-    letter-spacing: -0.01em;
-    color: var(--metal);
-    margin-left: 4px;
-  }
-  .trust-label {
-    font-size: 13px;
-    text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: var(--text-secondary);
-    font-weight: 500;
+    text-transform: uppercase;
+    color: var(--metal);
   }
-  .trust-counter {
-    display: inline-block;
-    min-width: 0;
-  }
+  .trust-counter { display: none; }
   @media (max-width: 900px) {
     .trust { padding: 64px 0; }
-    .trust-inner { grid-template-columns: 1fr 1fr; gap: 48px 0; }
-    .trust-item { padding: 24px !important; border-right: none; }
-    .trust-item:nth-child(odd) { border-right: 1px solid var(--border); }
-    .trust-number { font-size: 56px; }
+    .trust-manifesto { font-size: 1.3rem; }
   }
 
   /* ============================================
@@ -376,12 +349,12 @@
   .section-head .overline { margin-bottom: 20px; display: inline-block; }
   .why-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 1.3fr 1fr 1fr 1.3fr;
     gap: 16px;
+    align-items: start;
   }
   .why-item {
     position: relative;
-    aspect-ratio: 4 / 5;
     padding: 36px 32px;
     border-radius: 24px;
     background: linear-gradient(155deg, #2A2E50 0%, #1A1D36 55%, #14172B 100%);
@@ -389,6 +362,11 @@
     display: flex;
     flex-direction: column;
     isolation: isolate;
+    min-height: 400px;
+  }
+  .why-item:nth-child(even) {
+    min-height: 310px;
+    margin-top: 52px;
   }
   .why-item::before {
     content: '';
@@ -475,10 +453,12 @@
 
   @media (max-width: 1024px) {
     .why-grid { grid-template-columns: 1fr 1fr; }
-    .why-item { aspect-ratio: auto; min-height: 360px; }
+    .why-item { min-height: 320px; }
+    .why-item:nth-child(even) { margin-top: 0; min-height: 320px; }
   }
   @media (max-width: 600px) {
     .why-grid { grid-template-columns: 1fr; }
+    .why-item:nth-child(even) { margin-top: 0; }
   }
 
   /* ============================================
@@ -747,15 +727,20 @@
   .faq-icon::after { left: 50%; top: 0; bottom: 0; width: 1.5px; transform: translateX(-50%); }
   .faq-item.open .faq-icon { transform: rotate(45deg); }
   .faq-a {
-    max-height: 0;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 350ms var(--ease-soft);
+  }
+  .faq-a > p {
     overflow: hidden;
-    transition: max-height 300ms var(--ease-soft), padding 300ms var(--ease-soft);
     color: var(--text-secondary);
     font-size: 16px;
     line-height: 1.65;
-    padding: 0;
+    padding-bottom: 0;
+    transition: padding-bottom 350ms var(--ease-soft);
   }
-  .faq-item.open .faq-a { max-height: 320px; padding: 0 0 32px 0; }
+  .faq-item.open .faq-a { grid-template-rows: 1fr; }
+  .faq-item.open .faq-a > p { padding-bottom: 32px; }
 
   /* ============================================
      CTA FINAL
@@ -928,34 +913,13 @@
 
 <section class="trust">
   <div class="trust-inner">
-    <div class="trust-item">
-      <div class="trust-number">
-        <span class="trust-counter" data-target="32" data-decimals="0">0</span>
-        <span class="unit">jours</span>
-      </div>
-      <div class="trust-label">Délai moyen de vente</div>
-    </div>
-    <div class="trust-item">
-      <div class="trust-number">
-        <span class="trust-counter" data-target="4.8" data-decimals="1">0</span>
-        <span class="unit">/5</span>
-      </div>
-      <div class="trust-label">Satisfaction client</div>
-    </div>
-    <div class="trust-item">
-      <div class="trust-number">
-        <span class="trust-counter" data-target="150" data-decimals="0">0</span>
-        <span class="unit">+</span>
-      </div>
-      <div class="trust-label">Véhicules traités</div>
-    </div>
-    <div class="trust-item">
-      <div class="trust-number">
-        <span class="trust-counter" data-target="10" data-decimals="0">0</span>
-        <span class="unit">ans</span>
-      </div>
-      <div class="trust-label">Années d'expérience</div>
-    </div>
+    <p class="trust-manifesto reveal">
+      En <strong>10&nbsp;ans</strong>, nous avons accompagné plus de
+      <strong>150&nbsp;ventes</strong> dans <strong>2&nbsp;départements</strong>,
+      avec un délai moyen de <strong>32&nbsp;jours</strong> et un seul mot d'ordre :
+      vous répondre avant la fin de la journée.
+    </p>
+    <span class="trust-sig">ALB Auto 73 · Albertville, Savoie</span>
   </div>
 </section>
 
@@ -1277,25 +1241,6 @@
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
 
-  const animateCounter = (el) => {
-    const target = parseFloat(el.dataset.target);
-    const decimals = parseInt(el.dataset.decimals || '0', 10);
-    const duration = 1800;
-    const start = performance.now();
-    const easeOut = (t) => 1 - Math.pow(1 - t, 3);
-    const fmt = (v) => { const s = v.toFixed(decimals); return decimals > 0 ? s.replace('.', ',') : s; };
-    const step = (now) => {
-      const t = Math.min((now - start) / duration, 1);
-      el.textContent = fmt(target * easeOut(t));
-      if (t < 1) requestAnimationFrame(step);
-      else el.textContent = fmt(target);
-    };
-    requestAnimationFrame(step);
-  };
-  const counterObserver = new IntersectionObserver((entries) => {
-    entries.forEach((e) => { if (e.isIntersecting) { animateCounter(e.target); counterObserver.unobserve(e.target); } });
-  }, { threshold: 0.5 });
-  document.querySelectorAll('.trust-counter').forEach((el) => counterObserver.observe(el));
 
   document.querySelectorAll('.faq-q').forEach((q) => {
     q.addEventListener('click', () => {
