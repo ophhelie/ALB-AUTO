@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ALB Auto — Mandat de vente automobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Inter:wght@400;500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================
+     TOKENS — Palette "Midnight Blue & Leather"
+     ============================================ */
+  :root {
+    --bg-primary: #1A1D36;
+    --bg-secondary: #21253D;
+    --bg-darker: #14172B;
+    --surface: #292D4D;
+    --border: rgba(255, 255, 255, 0.06);
+    --border-strong: rgba(255, 255, 255, 0.12);
+    --text-primary: #F5F3EE;
+    --text-secondary: #9A9690;
+    --metal: #C8B79A;
+    --metal-deep: #8A7B65;
+    --metal-gradient: linear-gradient(135deg, #C8B79A 0%, #8A7B65 100%);
+    --placeholder: rgba(245, 243, 238, 0.04);
+    --placeholder-stroke: rgba(245, 243, 238, 0.08);
+    --to-provide: rgba(255, 224, 130, 0.95);
+
+    --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+    --container: 1280px;
+    --gutter: 24px;
+    --section-y: 160px;
+  }
+
+  /* ============================================
+     RESET
+     ============================================ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.55;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  img, svg { display: block; max-width: 100%; }
+
+  /* ============================================
+     TYPOGRAPHIE
+     ============================================ */
+  .display {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+    color: var(--text-primary);
+  }
+  .h1 { font-size: clamp(44px, 5.6vw, 80px); }
+  .h2 { font-size: clamp(40px, 5.5vw, 80px); }
+  .h3 { font-size: 24px; font-family: 'Inter Tight', sans-serif; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+  .overline {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--metal);
+    font-weight: 500;
+  }
+  .body-lead {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.45;
+    letter-spacing: -0.005em;
+    color: var(--text-primary);
+    max-width: 56ch;
+  }
+  .body-lead .accent {
+    color: var(--metal);
+    font-weight: 600;
+  }
+  .body { font-size: 16px; color: var(--text-secondary); }
+  .meta { font-size: 13px; color: var(--text-secondary); letter-spacing: 0.02em; }
+
+  /* ============================================
+     LAYOUT
+     ============================================ */
+  .container { width: 100%; max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); }
+  section { padding: var(--section-y) 0; position: relative; }
+  .section-alt { background: var(--bg-secondary); }
+
+  /* ============================================
+     BOUTONS / CTA
+     ============================================ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 28px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: background 350ms var(--ease-soft), transform 350ms var(--ease-soft), box-shadow 350ms var(--ease-soft);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: var(--metal);
+    color: #1A1814;
+  }
+  .btn-primary:hover {
+    background: #d4c4a8;
+    transform: scale(1.02);
+    box-shadow: 0 18px 48px -16px rgba(200, 183, 154, 0.35);
+  }
+  .btn-ghost {
+    border: 1px solid var(--metal);
+    color: var(--text-primary);
+    background: transparent;
+  }
+  .btn-ghost:hover {
+    background: rgba(200, 183, 154, 0.08);
+    color: var(--metal);
+  }
+  .btn-lg { padding: 24px 48px; font-size: 18px; }
+
+  /* ============================================
+     NAVIGATION
+     ============================================ */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 72px;
+    background: rgba(26, 29, 54, 0.7);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    height: 40px;
+  }
+  .logo img {
+    height: 100%;
+    width: auto;
+    display: block;
+  }
+  .footer-logo { height: 28px; }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--text-primary);
+    transition: color 250ms var(--ease-soft);
+    position: relative;
+    padding: 6px 2px;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    bottom: 0;
+    height: 1.5px;
+    background: var(--metal);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms var(--ease-soft);
+  }
+  .nav-links a:hover { color: var(--metal); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-cta { display: flex; gap: 12px; align-items: center; }
+  .nav-cta .btn { padding: 10px 18px; font-size: 14px; }
+
+  /* ============================================
+     HERO
+     ============================================ */
+  .hero {
+    min-height: 100vh;
+    padding-top: 160px;
+    padding-bottom: 120px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background-color: #0A0B12;
+    background-image: url('header-fond.jpg');
+    background-size: cover;
+    background-position: center right;
+    background-repeat: no-repeat;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(10, 11, 18, 0.92) 0%,
+      rgba(10, 11, 18, 0.78) 25%,
+      rgba(10, 11, 18, 0.45) 48%,
+      rgba(10, 11, 18, 0.15) 65%,
+      transparent 78%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10, 11, 18, 0.55) 0%, transparent 18%, transparent 75%, rgba(10, 11, 18, 0.35) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero > .container { position: relative; z-index: 1; }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+  }
+  .hero-content { max-width: 640px; }
+  .hero-content > * + * { margin-top: 28px; }
+  .hero-h1 .underlined {
+    position: relative;
+    display: inline-block;
+  }
+  .hero-h1 .underlined::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0.05em;
+    height: 2px;
+    width: 100%;
+    background: var(--metal);
+    transform-origin: left;
+    animation: draw 800ms var(--ease-soft) 400ms both;
+  }
+  @keyframes draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+  .hero-reassurance {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    letter-spacing: -0.005em;
+  }
+  .hero-reassurance span {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-reassurance span::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C8B79A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  /* ============================================
+     BANDEAU CONFIANCE
+     ============================================ */
+  .trust {
+    background: var(--bg-secondary);
+    padding: 100px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .trust::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(200, 183, 154, 0.05), transparent 50%),
+      radial-gradient(ellipse at 90% 100%, rgba(200, 183, 154, 0.03), transparent 50%);
+    pointer-events: none;
+  }
+  .trust-inner {
+    position: relative;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    text-align: center;
+  }
+  .trust-manifesto {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: clamp(1.45rem, 3.2vw, 2.6rem);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    color: rgba(245, 243, 238, 0.5);
+  }
+  .trust-manifesto strong {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+  .trust-sig {
+    display: block;
+    margin-top: 32px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--metal);
+  }
+  .trust-counter { display: none; }
+  @media (max-width: 900px) {
+    .trust { padding: 64px 0; }
+    .trust-manifesto { font-size: 1.3rem; }
+  }
+
+  /* ============================================
+     POURQUOI ALB
+     ============================================ */
+  .section-head { margin-bottom: 96px; max-width: 720px; }
+  .section-head .overline { margin-bottom: 20px; display: inline-block; }
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr 1.3fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .why-item {
+    position: relative;
+    padding: 36px 32px;
+    border-radius: 24px;
+    background: linear-gradient(155deg, #2A2E50 0%, #1A1D36 55%, #14172B 100%);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    isolation: isolate;
+    min-height: 400px;
+  }
+  .why-item:nth-child(even) {
+    min-height: 310px;
+    margin-top: 52px;
+  }
+  .why-item::before {
+    content: '';
+    position: absolute;
+    width: 130%;
+    height: 110%;
+    bottom: -30%;
+    right: -30%;
+    background: radial-gradient(ellipse, rgba(200, 183, 154, 0.22) 0%, rgba(200, 183, 154, 0.07) 32%, transparent 65%);
+    filter: blur(45px);
+    z-index: 0;
+    animation: haloDrift 16s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+  .why-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .why-item:nth-child(2)::before { animation-delay: -4s; }
+  .why-item:nth-child(3)::before { animation-delay: -8s; }
+  .why-item:nth-child(4)::before { animation-delay: -12s; }
+
+  @keyframes haloDrift {
+    0%, 100% { transform: translate(0%, 0%) scale(1); opacity: 0.85; }
+    25%      { transform: translate(-22%, -18%) scale(1.15); opacity: 0.6; }
+    50%      { transform: translate(-38%, -5%) scale(0.95); opacity: 0.95; }
+    75%      { transform: translate(-12%, -28%) scale(1.1); opacity: 0.7; }
+  }
+
+  .why-item h3 {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-size: clamp(22px, 1.8vw, 28px);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .why-item p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    max-width: 30ch;
+    position: relative;
+    z-index: 1;
+  }
+  .why-visual {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+  .why-icon {
+    width: 96px;
+    height: 96px;
+    color: var(--metal);
+    opacity: 0.82;
+    filter: drop-shadow(0 12px 24px rgba(200, 183, 154, 0.18));
+    animation: iconFloat 6s ease-in-out infinite;
+    will-change: transform;
+  }
+  .why-item:nth-child(2) .why-icon { animation-delay: -1.5s; }
+  .why-item:nth-child(3) .why-icon { animation-delay: -3s; }
+  .why-item:nth-child(4) .why-icon { animation-delay: -4.5s; }
+  .why-icon svg { width: 100%; height: 100%; stroke: currentColor; stroke-width: 1.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+  @keyframes iconFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .why-item::before, .why-icon { animation: none; }
+  }
+
+  @media (max-width: 1024px) {
+    .why-grid { grid-template-columns: 1fr 1fr; }
+    .why-item { min-height: 320px; }
+    .why-item:nth-child(even) { margin-top: 0; min-height: 320px; }
+  }
+  @media (max-width: 600px) {
+    .why-grid { grid-template-columns: 1fr; }
+    .why-item:nth-child(even) { margin-top: 0; }
+  }
+
+  /* ============================================
+     COMMENT CA MARCHE — frise
+     ============================================ */
+  .steps { position: relative; }
+  .step {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 96px;
+    align-items: center;
+    padding: 80px 0;
+    position: relative;
+  }
+  .step:nth-child(even) .step-text { order: 2; }
+  .step:nth-child(even) .step-visual { order: 1; }
+  .step-number {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 240px;
+    font-weight: 600;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--metal);
+    margin-bottom: 24px;
+  }
+  .step-text h3 { font-size: 36px; font-family: 'Inter Tight', sans-serif; font-weight: 500; letter-spacing: -0.015em; margin-bottom: 16px; }
+  .step-text .body { font-size: 17px; max-width: 48ch; }
+  .step-visual {
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(180deg, #2E325A 0%, #1A1D36 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .steps-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent 0%, var(--metal) 8%, var(--metal) 92%, transparent 100%);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .mockup-browser {
+    position: absolute;
+    inset: 32px;
+    background: #1A1D36;
+    border-radius: 10px;
+    border: 1px solid var(--border-strong);
+    overflow: hidden;
+  }
+  .mockup-bar { height: 28px; background: #21253D; display: flex; align-items: center; padding: 0 12px; gap: 6px; border-bottom: 1px solid var(--border); }
+  .mockup-bar span { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.12); }
+  .mockup-body { padding: 24px; }
+  .mockup-line { height: 10px; background: var(--placeholder); border-radius: 4px; margin-bottom: 12px; }
+  .mockup-line.short { width: 40%; }
+  .mockup-line.medium { width: 70%; }
+  .mockup-input { height: 38px; background: var(--placeholder); border-radius: 8px; border: 1px solid var(--border); margin-bottom: 12px; }
+  .mockup-btn { display: inline-block; padding: 10px 20px; background: var(--metal); border-radius: 999px; color: #1A1814; font-size: 12px; font-weight: 500; margin-top: 8px; }
+
+  .mockup-doc {
+    position: absolute;
+    inset: 40px;
+    background: #F5F3EE;
+    border-radius: 8px;
+    transform: rotate(-3deg);
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6);
+    padding: 28px 24px;
+    color: #1A1814;
+  }
+  .mockup-doc-h { font-family: 'Inter Tight', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 0.04em; margin-bottom: 16px; color: var(--metal-deep); }
+  .mockup-doc-line { height: 6px; background: rgba(26, 24, 20, 0.12); border-radius: 3px; margin-bottom: 9px; }
+  .mockup-doc-line.s { width: 38%; }
+  .mockup-doc-line.m { width: 72%; }
+  .mockup-doc-sig { margin-top: 18px; height: 22px; width: 110px; background: linear-gradient(90deg, var(--metal-deep), transparent); border-radius: 3px; opacity: 0.5; }
+
+  .mockup-dash {
+    position: absolute;
+    inset: 24px;
+    background: #21253D;
+    border-radius: 10px;
+    border: 1px solid var(--border-strong);
+    padding: 18px;
+  }
+  .mockup-dash-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+  .mockup-dash-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--metal); flex-shrink: 0; }
+  .mockup-dash-row span:first-of-type { flex: 1; color: var(--text-primary); }
+
+  .mockup-key {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(ellipse at center, rgba(200, 183, 154, 0.15), transparent 60%),
+      linear-gradient(180deg, #2E325A 0%, #14172B 100%);
+  }
+  .mockup-key svg { width: 140px; height: 140px; color: var(--metal); opacity: 0.85; filter: drop-shadow(0 8px 24px rgba(200, 183, 154, 0.25)); }
+
+  /* ============================================
+     POUR QUI — split
+     ============================================ */
+  .for-who {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0;
+  }
+  .for-who-col {
+    padding: 140px 80px;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: filter 350ms var(--ease-soft);
+    position: relative;
+  }
+  .for-who-col:first-child { background: var(--bg-primary); border-right: 1px solid var(--metal); }
+  .for-who-col:last-child { background: var(--bg-secondary); }
+  .for-who:hover .for-who-col:not(:hover) { filter: saturate(0.5) brightness(0.7); }
+  .for-who-category {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 40px;
+    font-family: 'Inter Tight', 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: clamp(56px, 5.4vw, 80px);
+    letter-spacing: -0.035em;
+    line-height: 1;
+    color: var(--text-primary);
+  }
+  .for-who-category .num {
+    font-size: 0.28em;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--metal);
+  }
+  .for-who-col h2 { font-size: 36px; font-family: 'Inter Tight', sans-serif; font-weight: 500; letter-spacing: -0.015em; line-height: 1.15; margin-bottom: 24px; color: var(--text-primary); }
+  .for-who-col .body { max-width: 42ch; margin-bottom: 28px; }
+  .bullets { list-style: none; margin-bottom: 36px; }
+  .bullets li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    font-size: 15px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+  }
+  .bullets li::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    margin-top: 4px;
+    flex-shrink: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C8B79A' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  /* ============================================
+     SOCIAL PROOF
+     ============================================ */
+  .proof-head { text-align: center; margin-bottom: 80px; }
+  .proof-head h2 { margin-bottom: 64px; }
+  .proof-stat {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: clamp(80px, 12vw, 160px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--text-primary);
+  }
+  .proof-stat-sub { margin-top: 16px; color: var(--text-secondary); font-size: 16px; }
+  .testimonials {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 64px;
+  }
+  .testimonial {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    position: relative;
+  }
+  .testimonial-quote {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 44px;
+    line-height: 0.6;
+    color: var(--metal);
+    margin-bottom: 16px;
+    height: 24px;
+  }
+  .testimonial-body { color: var(--text-primary); font-size: 16px; line-height: 1.55; margin-bottom: 24px; }
+  .testimonial-meta { font-size: 13px; color: var(--text-secondary); border-top: 1px solid var(--border); padding-top: 16px; }
+  .testimonial-meta strong { color: var(--text-primary); font-weight: 500; }
+
+  .partners {
+    margin-top: 96px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 48px;
+    opacity: 0.6;
+    flex-wrap: wrap;
+  }
+  .partner-logo {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 18px;
+    color: var(--text-secondary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    filter: grayscale(1);
+  }
+
+  /* ============================================
+     FAQ
+     ============================================ */
+  .faq { background: var(--bg-primary); }
+  .faq-container { max-width: 880px; margin: 0 auto; }
+  .faq h2 { margin-bottom: 64px; }
+  .faq-item { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+  .faq-q {
+    width: 100%;
+    text-align: left;
+    padding: 32px 0;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+  .faq-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: var(--metal);
+    transition: transform 300ms var(--ease-soft);
+    position: relative;
+  }
+  .faq-icon::before,
+  .faq-icon::after {
+    content: '';
+    position: absolute;
+    background: var(--metal);
+    border-radius: 1px;
+  }
+  .faq-icon::before { top: 50%; left: 0; right: 0; height: 1.5px; transform: translateY(-50%); }
+  .faq-icon::after { left: 50%; top: 0; bottom: 0; width: 1.5px; transform: translateX(-50%); }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+  .faq-a {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 350ms var(--ease-soft);
+  }
+  .faq-a > p {
+    overflow: hidden;
+    color: var(--text-secondary);
+    font-size: 16px;
+    line-height: 1.65;
+    padding-bottom: 0;
+    transition: padding-bottom 350ms var(--ease-soft);
+  }
+  .faq-item.open .faq-a { grid-template-rows: 1fr; }
+  .faq-item.open .faq-a > p { padding-bottom: 32px; }
+
+  /* ============================================
+     CTA FINAL
+     ============================================ */
+  .final-cta {
+    position: relative;
+    padding: 200px 0;
+    text-align: center;
+    background-color: #1A1D36;
+    background-image: radial-gradient(ellipse at 70% 30%, rgba(200, 183, 154, 0.10), transparent 55%);
+    overflow: hidden;
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(26, 29, 54, 0.55) 0%, rgba(26, 29, 54, 0.85) 70%, rgba(26, 29, 54, 0.95) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .final-cta > .container { position: relative; z-index: 1; }
+  .final-cta .overline { margin-bottom: 28px; display: inline-block; }
+  .final-cta h2 { margin-bottom: 48px; }
+  .final-cta-micro { margin-top: 20px; font-size: 13px; color: var(--text-secondary); }
+
+  /* ============================================
+     FOOTER
+     ============================================ */
+  footer {
+    background: var(--bg-darker);
+    padding: 96px 0 32px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 48px;
+    margin-bottom: 72px;
+  }
+  .footer-col h4 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--metal);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { padding: 6px 0; }
+  .footer-col a { font-size: 14px; color: var(--text-secondary); transition: color 200ms; }
+  .footer-col a:hover { color: var(--text-primary); }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  /* ============================================
+     SCROLL REVEAL
+     ============================================ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 600ms var(--ease-soft), transform 600ms var(--ease-soft);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* ============================================
+     CUSTOM CURSOR
+     ============================================ */
+  .cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--metal);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999;
+    transition: transform 200ms var(--ease-soft), opacity 200ms;
+    mix-blend-mode: difference;
+    opacity: 0;
+  }
+  .cursor.visible { opacity: 1; }
+  .cursor.hover { transform: scale(1.6); background: rgba(200, 183, 154, 0.2); }
+
+  /* ============================================
+     MOBILE
+     ============================================ */
+  @media (max-width: 900px) {
+    :root { --section-y: 96px; --gutter: 20px; }
+    .nav-links { display: none; }
+    .nav-cta .btn:first-child { display: none; }
+    .hero { padding-top: 120px; min-height: 600px; padding-bottom: 80px; background-position: 70% center; }
+    .hero::before {
+      background: linear-gradient(180deg, rgba(10, 11, 18, 0.85) 0%, rgba(10, 11, 18, 0.5) 60%, transparent 100%);
+    }
+    .hero-content { max-width: 100%; }
+    .trust-inner { grid-template-columns: 1fr 1fr; height: auto; }
+    .trust { height: auto; }
+    .trust-item { padding: 24px 12px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .trust-item:nth-child(even) { border-right: none; }
+    .trust-item:nth-last-child(-n+2) { border-bottom: none; }
+    .why-grid { grid-template-columns: 1fr; }
+    .step { grid-template-columns: 1fr; gap: 40px; padding: 48px 0; }
+    .step:nth-child(even) .step-text { order: 1; }
+    .step:nth-child(even) .step-visual { order: 2; }
+    .step-number { font-size: 140px; }
+    .step-text h3 { font-size: 28px; }
+    .steps-line { display: none; }
+    .for-who { grid-template-columns: 1fr; }
+    .for-who-col { padding: 80px 24px; min-height: auto; }
+    .for-who-col:first-child { border-right: none; border-bottom: 1px solid var(--metal); }
+    .testimonials { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+    .section-head { margin-bottom: 56px; }
+    .cursor { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="#" class="logo" aria-label="ALB Auto 73 — accueil">
+      <img src="logo-albauto.png" alt="ALB Auto 73"
+           onerror="this.style.display='none'" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="#vendre">Vendre</a></li>
+      <li><a href="#acheter">Acheter</a></li>
+      <li><a href="#methode">Notre méthode</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#" class="btn btn-ghost">Parler à un conseiller</a>
+      <a href="#estimation" class="btn btn-primary">Estimer mon véhicule</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <p class="overline reveal">Mandat de vente automobile · Albertville, Savoie</p>
+        <h1 class="display h1 hero-h1 reveal">
+          Votre véhicule mérite mieux qu'une <span class="underlined">annonce.</span>
+        </h1>
+        <p class="body-lead reveal">
+          ALB Auto 73 se charge de l'estimation, de la mise en vente et de la transaction. Vous fixez le prix de réserve, nous trouvons l'acheteur.
+        </p>
+        <div class="hero-ctas reveal">
+          <a href="#estimation" class="btn btn-primary">Estimer mon véhicule</a>
+          <a href="#acheter" class="btn btn-ghost">Voir les véhicules disponibles</a>
+        </div>
+        <p class="hero-reassurance reveal">
+          <span>Estimation gratuite</span><span>Sans engagement</span><span>Réponse sous 24h</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="trust">
+  <div class="trust-inner">
+    <p class="trust-manifesto reveal">
+      En <strong>10&nbsp;ans</strong>, nous avons accompagné plus de
+      <strong>150&nbsp;ventes</strong> dans <strong>2&nbsp;départements</strong>,
+      avec un délai moyen de <strong>32&nbsp;jours</strong> et un seul mot d'ordre :
+      vous répondre avant la fin de la journée.
+    </p>
+    <span class="trust-sig">ALB Auto 73 · Albertville, Savoie</span>
+  </div>
+</section>
+
+<section id="methode">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="overline">Pourquoi ALB Auto 73</p>
+      <h2 class="display h2">Une vente accompagnée,<br />pas un dépôt-vente.</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-item reveal">
+        <h3>Estimation argumentée</h3>
+        <p>Cote argus, transactions récentes, état réel du véhicule.</p>
+        <div class="why-visual">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="why-item reveal">
+        <h3>Mandat sans surprise</h3>
+        <p>Durée et commission écrites avant signature.</p>
+        <div class="why-visual">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="why-item reveal">
+        <h3>Transaction sécurisée</h3>
+        <p>Vérification acheteur, contrôle des papiers, remise des clés.</p>
+        <div class="why-visual">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="why-item reveal">
+        <h3>Un week-end retrouvé</h3>
+        <p>Pas d'annonces, pas de visites, pas de négociations.</p>
+        <div class="why-visual">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt" id="vendre">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="overline">Comment ça marche</p>
+      <h2 class="display h2">Quatre étapes,<br />zéro friction.</h2>
+    </div>
+
+    <div class="steps">
+      <div class="steps-line"></div>
+
+      <div class="step">
+        <div class="step-text reveal">
+          <div class="step-number">01</div>
+          <h3>Estimation gratuite</h3>
+          <p class="body">Vous renseignez les caractéristiques de votre véhicule. Sous 24h, vous recevez une fourchette d'estimation argumentée.</p>
+        </div>
+        <div class="step-visual reveal">
+          <div class="mockup-browser">
+            <div class="mockup-bar"><span></span><span></span><span></span></div>
+            <div class="mockup-body">
+              <div class="mockup-line short" style="background: var(--metal); opacity: 0.6;"></div>
+              <div style="height: 14px;"></div>
+              <div class="mockup-line medium"></div>
+              <div class="mockup-input"></div>
+              <div class="mockup-input"></div>
+              <div class="mockup-line short"></div>
+              <div class="mockup-input"></div>
+              <span class="mockup-btn">Recevoir mon estimation</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-text reveal">
+          <div class="step-number">02</div>
+          <h3>Signature du mandat de vente</h3>
+          <p class="body">Durée, commission, prix de réserve : tout est écrit. Vous signez en agence ou à distance.</p>
+        </div>
+        <div class="step-visual reveal">
+          <div class="mockup-doc">
+            <div class="mockup-doc-h">Mandat de vente — ALB Auto 73</div>
+            <div class="mockup-doc-line m"></div>
+            <div class="mockup-doc-line s"></div>
+            <div class="mockup-doc-line m"></div>
+            <div class="mockup-doc-line m"></div>
+            <div class="mockup-doc-line s"></div>
+            <div class="mockup-doc-line m"></div>
+            <div class="mockup-doc-sig"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-text reveal">
+          <div class="step-number">03</div>
+          <h3>Mise en vente et qualification des acheteurs</h3>
+          <p class="body">Nous diffusons l'annonce, filtrons les contacts, organisons les essais. Vous suivez l'avancée en temps réel.</p>
+        </div>
+        <div class="step-visual reveal">
+          <div class="mockup-dash">
+            <div style="font-size: 11px; color: var(--metal); margin-bottom: 12px; letter-spacing: 0.1em; text-transform: uppercase;">Contacts qualifiés</div>
+            <div class="mockup-dash-row"><div class="mockup-dash-dot"></div><span>M. Lefèvre</span><span>Essai prévu</span></div>
+            <div class="mockup-dash-row"><div class="mockup-dash-dot" style="background: var(--text-secondary);"></div><span>Mme Garnier</span><span>En attente</span></div>
+            <div class="mockup-dash-row"><div class="mockup-dash-dot"></div><span>M. Bertin</span><span>Offre reçue</span></div>
+            <div class="mockup-dash-row"><div class="mockup-dash-dot" style="background: var(--text-secondary);"></div><span>Mme Roy</span><span>À recontacter</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-text reveal">
+          <div class="step-number">04</div>
+          <h3>Transaction et remise des clés</h3>
+          <p class="body">Vérification des fonds, signature des documents, remise du véhicule. Vous recevez le produit de la vente.</p>
+        </div>
+        <div class="step-visual reveal">
+          <div class="mockup-key">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="8" cy="15" r="4"/>
+              <path d="M11 12l8-8"/>
+              <path d="M17 6l3 3"/>
+              <path d="M14 9l3 3"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding: 0;" id="acheter">
+  <div class="for-who">
+    <div class="for-who-col">
+      <div class="for-who-category reveal">
+        <span class="num">01 / VENTE</span>
+      </div>
+      <div class="for-who-category reveal" style="margin-bottom: 32px;">Vendre votre véhicule.</div>
+      <h2 class="reveal">Posez les clés, encaissez le prix de réserve.</h2>
+      <p class="body reveal">Estimation argumentée, mise en vente sur les bonnes plateformes, qualification des acheteurs, signature : ALB Auto 73 pilote chaque étape. Vous fixez le seuil, vous validez chaque offre.</p>
+      <ul class="bullets reveal">
+        <li>Mandat écrit, commission fixée avant signature</li>
+        <li>Diffusion de l'annonce sur les plateformes pertinentes</li>
+        <li>Acheteurs filtrés, essais accompagnés</li>
+      </ul>
+      <a href="#estimation" class="btn btn-ghost reveal" style="align-self: flex-start;">Démarrer mon mandat</a>
+    </div>
+    <div class="for-who-col">
+      <div class="for-who-category reveal">
+        <span class="num">02 / ACHAT</span>
+      </div>
+      <div class="for-who-category reveal" style="margin-bottom: 32px;">Acheter un véhicule vérifié.</div>
+      <h2 class="reveal">Un seul interlocuteur, du premier essai aux clés.</h2>
+      <p class="body reveal">Chaque véhicule du stock passe au contrôle mécanique et administratif avant d'apparaître en ligne. Historique complet, carnet d'entretien à jour, essai accompagné.</p>
+      <ul class="bullets reveal">
+        <li>Contrôle technique récent, historique d'entretien complet</li>
+        <li>Essai sans engagement, accompagné par un conseiller</li>
+        <li>Solutions de financement et garantie disponibles</li>
+      </ul>
+      <a href="#" class="btn btn-ghost reveal" style="align-self: flex-start;">Voir le stock disponible</a>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt">
+  <div class="container">
+    <div class="proof-head">
+      <h2 class="display h2 reveal" style="margin-bottom: 80px;">Ils ont choisi ALB Auto 73.</h2>
+      <div class="proof-stat reveal">150</div>
+      <p class="proof-stat-sub reveal">véhicules traités depuis notre ouverture</p>
+    </div>
+
+    <div class="testimonials">
+      <article class="testimonial reveal">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-body">Estimation honnête, sans la moindre pression. Le véhicule est parti en trois semaines, au prix annoncé. Je n'ai eu à m'occuper de rien.</p>
+        <div class="testimonial-meta"><strong>Cédric L.</strong> · Albertville · Audi A4 Avant</div>
+      </article>
+      <article class="testimonial reveal">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-body">J'avais déjà tenté la vente entre particuliers. Cette fois, j'ai gagné un mois de tranquillité et le prix final était identique. Aucun regret.</p>
+        <div class="testimonial-meta"><strong>Hélène M.</strong> · Chambéry · BMW Série 3</div>
+      </article>
+      <article class="testimonial reveal">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-body">Achat d'un véhicule récent via leur stock. Historique limpide, essai détendu, paperasse réglée le jour même. Sérieux du premier au dernier échange.</p>
+        <div class="testimonial-meta"><strong>Mathieu T.</strong> · Grenoble · Peugeot 3008</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="container faq-container">
+    <h2 class="display h2 reveal">Les questions<br />qu'on nous pose.</h2>
+
+    <div class="faq-item reveal">
+      <button class="faq-q">
+        <span>Quelle est votre commission ?</span>
+        <span class="faq-icon"></span>
+      </button>
+      <div class="faq-a">
+        <p>La commission est fixée à la signature du mandat, en fonction du prix de réserve et du type de véhicule. Elle est due uniquement si la vente est conclue. Aucun frais d'estimation, aucun frais de mise en vente.</p>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-q">
+        <span>Quelle est la durée du mandat ?</span>
+        <span class="faq-icon"></span>
+      </button>
+      <div class="faq-a">
+        <p>Le mandat dure généralement trois mois, renouvelable d'un commun accord. La durée précise et les conditions de résiliation sont écrites dans le contrat avant signature.</p>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-q">
+        <span>Que se passe-t-il si le véhicule ne se vend pas ?</span>
+        <span class="faq-icon"></span>
+      </button>
+      <div class="faq-a">
+        <p>Vous récupérez votre véhicule sans pénalité. Nous pouvons proposer un ajustement du prix de réserve si le marché l'indique, mais vous restez décisionnaire.</p>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-q">
+        <span>Puis-je continuer à utiliser mon véhicule pendant la mise en vente ?</span>
+        <span class="faq-icon"></span>
+      </button>
+      <div class="faq-a">
+        <p>Oui. Le véhicule reste à votre disposition. Nous convenons simplement de créneaux pour les visites et les essais.</p>
+      </div>
+    </div>
+
+    <div class="faq-item reveal">
+      <button class="faq-q">
+        <span>Pouvez-vous racheter directement mon véhicule ?</span>
+        <span class="faq-icon"></span>
+      </button>
+      <div class="faq-a">
+        <p>C'est une option possible si vous avez besoin d'une transaction rapide. L'offre de rachat est alors inférieure au prix de mandat car nous portons le stock. Nous précisons toujours les deux scénarios.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta" id="estimation">
+  <div class="container">
+    <p class="overline reveal">Prêt à passer à l'action ?</p>
+    <h2 class="display h2 reveal">Estimation en 2 minutes.<br />Sans engagement.</h2>
+    <a href="#" class="btn btn-primary btn-lg reveal">Lancer mon estimation</a>
+    <p class="final-cta-micro reveal">Vous serez recontacté sous 24h ouvrées.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Plan du site</h4>
+        <ul>
+          <li><a href="#vendre">Vendre</a></li>
+          <li><a href="#acheter">Acheter</a></li>
+          <li><a href="#methode">Notre méthode</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#">Mandat de vente</a></li>
+          <li><a href="#">Rachat direct</a></li>
+          <li><a href="#">Recherche véhicule</a></li>
+          <li><a href="#">Accompagnement</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Mentions légales</h4>
+        <ul>
+          <li><a href="#">CGV</a></li>
+          <li><a href="#">Mentions légales</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+          <li><a href="#">Cookies</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li>27 chemin de la Fonderie<br />73200 Albertville</li>
+          <li><a href="tel:+33600000000">+33 (0)6 XX XX XX XX</a></li>
+          <li><a href="mailto:contact@albauto73.fr">contact@albauto73.fr</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 ALB Auto 73 · Tous droits réservés</div>
+      <div>27 chemin de la Fonderie, 73200 Albertville · <a href="#">Mentions légales</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('in'); revealObserver.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+
+
+  document.querySelectorAll('.faq-q').forEach((q) => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach((i) => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  const cursor = document.getElementById('cursor');
+  let cx = 0, cy = 0, tx = 0, ty = 0;
+  document.addEventListener('mousemove', (e) => { tx = e.clientX - 10; ty = e.clientY - 10; cursor.classList.add('visible'); });
+  document.addEventListener('mouseleave', () => cursor.classList.remove('visible'));
+  function loop() { cx += (tx - cx) * 0.18; cy += (ty - cy) * 0.18; cursor.style.transform = `translate(${cx}px, ${cy}px)`; requestAnimationFrame(loop); }
+  loop();
+  document.querySelectorAll('a, button').forEach((el) => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+
+  const heroSection = document.querySelector('.hero');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y < 900 && heroSection) heroSection.style.backgroundPositionY = `calc(50% + ${y * 0.15}px)`;
+  }, { passive: true });
+</script>
+
+</body>
+</html>
